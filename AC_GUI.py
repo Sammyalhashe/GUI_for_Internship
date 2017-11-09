@@ -3,6 +3,8 @@
 import sys
 import os
 import select
+import time
+import re
 #import Xlib.support.connect as xlib_connect
 from Tkinter import *
 import Tkinter, Tkconstants, tkFileDialog,tkSimpleDialog, tkMessageBox
@@ -13,8 +15,8 @@ import glob
 import shutil
 import socket,errno
 
-#########################################
-hostname = '10.241.70.36'
+#################DEFINTIONS USED THROUGHOUT CODE########################
+hostname = '10.241.70.36' ## robinson
 username = 'selhash'
 password = 'Rfin1ihe'
 
@@ -41,6 +43,7 @@ tmg_dic ={
 sil_dic = {
     'title': 'Please select where CRUNCHED Silicon Data is (from parser)'
 }
+######################################################################
 
 ''' GUI Class Creation using Tkinter '''
 class AC_GUI(Frame):
@@ -50,42 +53,10 @@ class AC_GUI(Frame):
 
     ## SSH CONNECTION (NEEDS WORK)
     def SSHCONNECT(self,user,pwd):
-
-        self.ssh = SSHClient()
-        self.ssh.load_system_host_keys()
+        self.shell_handler = ShellHandler(hostname, user, pwd)
         paramiko.util.log_to_file("filename.log")
-        self.ssh.set_missing_host_key_policy(AutoAddPolicy())
-        try:
-            conns = self.ssh.connect(hostname, port=22, username=user, password=pwd, pkey=None, key_filename=None, timeout=10, allow_agent=True, look_for_keys=True, compress=False, sock=None, gss_auth=False, gss_kex=False, gss_deleg_creds=True, gss_host=None, banner_timeout=None, auth_timeout=None, gss_trust_dns=True)
-            transport = self.ssh.get_transport()
-            self.channel = transport.open_session()
-
-            if (conns is None):
-                print "Successfully Authenticated"
-                self.top.insert(INSERT,"Successfully Authenticated"+"\n")
-                file = open("filename.log","r")
-                for line in file:
-                    self.top.insert(INSERT,line+"\n")
-                os.system("DEL filename.log")
-            else:
-                file = open("filename.log",r)
-                for line in file:
-                    self.top.insert(INSERT,line+"\n")
-                os.system("DEL filename.log")
-                return 2
-
-        except paramiko.ssh_exception.AuthenticationException as e:
-            print "Incorrect Username %s and Password %s "%(user,pwd)
-            self.top.insert(INSERT,"Incorrect Username %s and Password %s "%(user,pwd))
-            return 2
-        except socket.error as e:
-            if e.errno == errno.ECONNREFUSED:
-                print "Connection Error\n"
-                return 1
-
-        print "Correct Username %s and Password %s"%(user,pwd)
-        self.top.insert(INSERT,"Correct Username %s and Password %s"%(user,pwd))
-        return 0
+        connected = self.shell_handler.connect()
+        return connected
 
 
     ## RUNNING OLIVIER's TIMING SCRIPTS (NEEDS WORK)
@@ -95,31 +66,26 @@ class AC_GUI(Frame):
         script_filename = tkFileDialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("shell files","*.sh"),("all files","*.*")))
         self.top.insert(INSERT,"Script Chosen: %s\n"%("None" if script_filename=="" else script_filename))
         if(script_filename != ""):
-            direc1= script_filename.replace("Z:","/soft/dct/selhash")
+            direc1= script_filename.replace("Z:","/soft/dct")
+            print direc1
             conn = self.SSHCONNECT(username, password)
-            if(not conn): ## IF ABLE TO CONNECT
-                ssh_stdin,ssh_stdout,ssh_stderr = self.ssh.exec_command("sh %s"%(direc1))
-                #ssh_stdin,ssh_stdout,ssh_stderr = self.channel.exec_command("sh %s"%(direc1))
-                #while True:
-                    #if self.channel.exit_status_ready():
-                    #    break
-                    #rl, wl, xl = select.select([self.channel], [], [], 0.0)
-                    #if len(rl) > 0:
-                    #    print self.channel.recv(1024)
-                    #    self.top.insert(INSERT,self.channel.recv(1024))
-                if(ssh_stdout):
-                    self.ssh.close()
+            print str(conn)+"\n"
+            if(conn == 0): ## IF ABLE TO CONNECT
+                self.top.insert(INSERT,"Correct Username %s and Password %s\n"%(username,password))
+                stdin,stdout,stderr = self.shell_handler.execute("sh %s"%(direc1))
+                if(stderr):
+                    self.top.insert(INSERT,"Error: %s\n"%(stderr))
+                self.top.insert(INSERT,"connection closed\n")
             elif(conn == 1):
-                self.top.insert(INSERT,"Connection Error")
+                self.top.insert(INSERT,"Connection Error\n")
             elif(conn == 2):
-                self.top.insert(INSERT,"Authentication error: wrong Username/Password")
+                self.top.insert(INSERT,"Authentication error: wrong Username/Password\n")
         else:
             self.top.insert(INSERT,"Process Aborted\n")
 
 
     ## CONCATENATE TMG SCRIPT RESULTS INTO ONE FILE AND CHOOSE DUMP DIRECTORY
     def concatenate(self):
-        #root = Tk(screenName=None, baseName=None, className='Tk', useTk=1, sync=0, use=None
 
         dirname = tkFileDialog.askdirectory(**dirdic)
         self.top.insert(INSERT,"Chose Directory: %s\n"%("None" if dirname=="" else dirname))
@@ -297,10 +263,117 @@ class AC_GUI(Frame):
         Frame.__init__(self, master)
         self.pack()
         self.createWidgets()
+######################################################################
 
+class ShellHandler:
 
+    def __init__(self, host, user, psw):
+        self.ssh = paramiko.SSHClient()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self.host = host
+        self.user = user
+        self.psw = psw
 
+    def connect(self):
+        try:
+            self.ssh.connect(self.host, username=self.user, password=self.psw, port=22)
+            channel = self.ssh.invoke_shell()
+            self.stdin = channel.makefile('wb')
+            self.stdout = channel.makefile('r')
+        except paramiko.ssh_exception.AuthenticationException as e:
+            print "Incorrect Username %s and Password %s "%(self.user,self.pwd)
+            self.top.insert(INSERT,"Incorrect Username %s and Password %s "%(self.user,self.pwd))
+            return 2
+        except socket.error as e:
+            if e.errno == errno.ECONNREFUSED:
+                print "Connection Error\n"
+                self.top.insert(INSERT,"Connection Error\n")
+                return 1
+            else:
+                print "Something went wrong\n"
+                self.top.insert(INSERT,"Something went wrong\n")
+                return 1
 
+        print "Correct Username %s and Password %s\n"%(self.user,self.psw)
+
+        return 0
+
+    def __del__(self):
+        self.ssh.close()
+
+    def execute(self, cmd):
+        try:
+            #ssh_stdin,ssh_stdout,ssh_stderr = self.ssh.exec_command("sh %s"%(direc1))
+            #ssh_stdin,ssh_stdout,ssh_stderr = self.shell_handler.execute("sh %s"%(direc1))
+            stdin,stdout,stderr = self.ssh.exec_command(cmd)
+            if(stderr):
+                for errors in stderr.readlines():
+                    print errors.encode('ascii')
+            # print(stderr.readlines())
+            # print_counter = 0
+            # while(not stdout.channel.exit_status_ready() and not stdout.channel.recv_ready()):
+            #     print ("stdout:",stdout.channel.exit_status_ready(), stdout.channel.recv_ready())
+            #     if(print_counter%100==0):
+            #         print("script running\n")
+            #         #AC_GUI.top.insert(INSERT,"script running\n")
+            #     time.sleep(0.1)
+
+            #     print_counter+=1
+
+        finally:
+            if self.ssh is not None:
+                self.__del__()
+
+        return stdin,stdout,stderr
+        """
+
+        :param cmd: the command to be executed on the remote computer
+        :examples:  execute('ls')
+                    execute('finger')
+                    execute('cd folder_name')
+        """
+        # cmd = cmd.strip('\n')
+        # print("command: ",cmd)
+        # self.stdin.write(cmd + '\n')
+        # print ("stdin:"self.stdin)
+        # finish = 'end of stdOUT buffer. finished with exit status'
+        # echo_cmd = 'echo {} $?'.format(finish)
+        # self.stdin.write(echo_cmd + '\n')
+        # shin = self.stdin
+        # self.stdin.flush()
+
+        # shout = []
+        # sherr = []
+        # exit_status = 0
+        # for line in self.stdout:
+        #     if str(line).startswith(cmd) or str(line).startswith(echo_cmd):
+        #         # up for now filled with shell junk from stdin
+        #         shout = []
+        #     elif str(line).startswith(finish):
+        #         # our finish command ends with the exit status
+        #         exit_status = int(str(line).rsplit(None,1)[1])
+        #         if exit_status:
+        #             # stderr is combined with stdout.
+        #             # thus, swap sherr with shout in a case of failure.
+        #             sherr = shout
+        #             shout = []
+        #         break
+        #     else:
+        #         # get rid of 'coloring and formatting' special characters
+        #         shout.append(re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]').sub('', line).
+        #                      replace('\b', '').replace('\r', ''))
+
+        # # first and last lines of shout/sherr contain a prompt
+        # if shout and echo_cmd in shout[-1]:
+        #     shout.pop()
+        # if shout and cmd in shout[0]:
+        #     shout.pop(0)
+        # if sherr and echo_cmd in sherr[-1]:
+        #     sherr.pop()
+        # if sherr and cmd in sherr[0]:
+        #     sherr.pop(0)
+
+####################### WHERE CODE IS IMPLEMENTED NAD CLASSES INSTANTIATED #################################
 
 root = Tk()
 #device_name = tkSimpleDialog.askstring("Device Prompt", "Enter Device")
