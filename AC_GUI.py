@@ -2,12 +2,16 @@
 ''' Import Statements '''
 import sys
 import os
+import select
+#import Xlib.support.connect as xlib_connect
 from Tkinter import *
 import Tkinter, Tkconstants, tkFileDialog,tkSimpleDialog, tkMessageBox
 from subprocess import PIPE,Popen
 from paramiko import *
+import paramiko
 import glob
 import shutil
+import socket,errno
 
 #########################################
 hostname = '10.241.70.36'
@@ -46,32 +50,72 @@ class AC_GUI(Frame):
 
     ## SSH CONNECTION (NEEDS WORK)
     def SSHCONNECT(self,user,pwd):
-        pass
+
         self.ssh = SSHClient()
+        self.ssh.load_system_host_keys()
+        paramiko.util.log_to_file("filename.log")
         self.ssh.set_missing_host_key_policy(AutoAddPolicy())
         try:
-            self.ssh.connect(hostname, port=22, username=username, password=password, pkey=None, key_filename=None, timeout=10, allow_agent=True, look_for_keys=True, compress=False, sock=None, gss_auth=False, gss_kex=False, gss_deleg_creds=True, gss_host=None, banner_timeout=None, auth_timeout=None, gss_trust_dns=True)
-        except SSHException.AuthenticationException as e:
-            print "Incorrect Username %s and Password %s "%(username,password)
-        else:
-            print "Correct Username %s and Password %s"%(username,password)
-        self.transport = self.ssh.get_transport()
-        self.session = self.transport.open_session()
-        self.session.request_x11(single_connection = True)
-        self.session.exec_command('xterm')
-        self.x11_chan = transport.accept(timeout=None)
+            conns = self.ssh.connect(hostname, port=22, username=user, password=pwd, pkey=None, key_filename=None, timeout=10, allow_agent=True, look_for_keys=True, compress=False, sock=None, gss_auth=False, gss_kex=False, gss_deleg_creds=True, gss_host=None, banner_timeout=None, auth_timeout=None, gss_trust_dns=True)
+            transport = self.ssh.get_transport()
+            self.channel = transport.open_session()
+
+            if (conns is None):
+                print "Successfully Authenticated"
+                self.top.insert(INSERT,"Successfully Authenticated"+"\n")
+                file = open("filename.log","r")
+                for line in file:
+                    self.top.insert(INSERT,line+"\n")
+                os.system("DEL filename.log")
+            else:
+                file = open("filename.log",r)
+                for line in file:
+                    self.top.insert(INSERT,line+"\n")
+                os.system("DEL filename.log")
+                return 2
+
+        except paramiko.ssh_exception.AuthenticationException as e:
+            print "Incorrect Username %s and Password %s "%(user,pwd)
+            self.top.insert(INSERT,"Incorrect Username %s and Password %s "%(user,pwd))
+            return 2
+        except socket.error as e:
+            if e.errno == errno.ECONNREFUSED:
+                print "Connection Error\n"
+                return 1
+
+        print "Correct Username %s and Password %s"%(user,pwd)
+        self.top.insert(INSERT,"Correct Username %s and Password %s"%(user,pwd))
+        return 0
+
 
     ## RUNNING OLIVIER's TIMING SCRIPTS (NEEDS WORK)
     def run_timingScript(self):
         pass
         #root = Tk(screenName=None, baseName=None, className='Tk', useTk=1, sync=0, use=None)
-        root.filename = tkFileDialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("shell files","*.sh"),("all files","*.*")))
+        script_filename = tkFileDialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("shell files","*.sh"),("all files","*.*")))
+        self.top.insert(INSERT,"Script Chosen: %s\n"%("None" if script_filename=="" else script_filename))
+        if(script_filename != ""):
+            direc1= script_filename.replace("Z:","/soft/dct/selhash")
+            conn = self.SSHCONNECT(username, password)
+            if(not conn): ## IF ABLE TO CONNECT
+                ssh_stdin,ssh_stdout,ssh_stderr = self.ssh.exec_command("sh %s"%(direc1))
+                #ssh_stdin,ssh_stdout,ssh_stderr = self.channel.exec_command("sh %s"%(direc1))
+                #while True:
+                    #if self.channel.exit_status_ready():
+                    #    break
+                    #rl, wl, xl = select.select([self.channel], [], [], 0.0)
+                    #if len(rl) > 0:
+                    #    print self.channel.recv(1024)
+                    #    self.top.insert(INSERT,self.channel.recv(1024))
+                if(ssh_stdout):
+                    self.ssh.close()
+            elif(conn == 1):
+                self.top.insert(INSERT,"Connection Error")
+            elif(conn == 2):
+                self.top.insert(INSERT,"Authentication error: wrong Username/Password")
+        else:
+            self.top.insert(INSERT,"Process Aborted\n")
 
-        #self.SSHCONNECT("selhash", "Rfin1ihe")
-        #self.session.exec_command('cd ')
-        proc = Popen('C:\cygwin64\Cygwin.bat',stdin = PIPE,stdout = PIPE, bufsize=1)
-        stdout,stderr = proc.communicate('sshpass -p %s ssh -X -t robinson'%password)
-        print stdout
 
     ## CONCATENATE TMG SCRIPT RESULTS INTO ONE FILE AND CHOOSE DUMP DIRECTORY
     def concatenate(self):
@@ -127,7 +171,7 @@ class AC_GUI(Frame):
         else:
             self.top.insert(INSERT,"...Process aborted...\n")
 
-
+    ## RUNS THE SILICON DATA PARSER FROM ISE AND PUTS IT INTO A FOLDER CALLED 'CRUNCHED'
     def runparser(self):
         Data_dir = tkFileDialog.askdirectory(**Sil_data_dic)
         Data_dir1 = Data_dir.replace('/','\\')
@@ -154,7 +198,7 @@ class AC_GUI(Frame):
             self.top.insert(INSERT,"...Process aborted...\n")
 
 
-
+    ## YOU GIVE THE SILICON(CRUNCHED)+TIMING DATA AND RUNS A PERL SCRIPT THAT GENERATES RATIOS TO PLOT
     def run_all(self):
         pass
         proc = Popen('C:\cygwin64\Cygwin.bat',stdin = PIPE,stdout = PIPE, bufsize=1)
@@ -181,10 +225,8 @@ class AC_GUI(Frame):
             self.top.insert(INSERT,"...ERROR...\n")
 
 
-
-
-
-
+    ## CREATING THE GUI AND ATTACHING THE BUTTTONS TO ALL FUNCTIONS DEFINED ABOVE
+    ## CAN BE MADE TO LOOK A LITTLE PRETTIER
     def createWidgets(self):
 
         ## LABEL
