@@ -5,7 +5,6 @@ import os
 import select
 import time
 import re
-#import Xlib.support.connect as xlib_connect
 from Tkinter import *
 import Tkinter, Tkconstants, tkFileDialog,tkSimpleDialog, tkMessageBox
 from subprocess import PIPE,Popen
