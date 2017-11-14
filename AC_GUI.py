@@ -42,6 +42,17 @@ sil_dic = {
 
 ''' GUI Class Creation using Tkinter '''
 class AC_GUI(Frame):
+    """The Entire GUI
+
+    Includes Constructor, a widget_creator method and all other class behaviour methods
+
+    Extends:
+        Frame
+
+    Variables:
+        } {[type]} -- [description]
+        ''' GUI Class Creation using Tkinter ''' {[type]} -- [description]
+    """
 
     def sysGUIInsert(self,stdout):
         self.top.insert(INSERT, stdout+"\n")
