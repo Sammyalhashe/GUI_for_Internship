@@ -1,6 +1,5 @@
 #!/usr/bin/python
 ''' Import Statements '''
-import sys
 import os
 from Tkinter import *
 import tkFileDialog,tkSimpleDialog
