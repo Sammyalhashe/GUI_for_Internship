@@ -2,11 +2,8 @@
 ''' Import Statements '''
 import sys
 import os
-import select
-import time
-import re
 from Tkinter import *
-import Tkinter, Tkconstants, tkFileDialog,tkSimpleDialog, tkMessageBox
+import tkFileDialog,tkSimpleDialog
 from subprocess import PIPE,Popen
 from paramiko import *
 import paramiko
@@ -185,7 +182,7 @@ class AC_GUI(Frame):
             self.top.insert(INSERT,"    DONE    \n")
             for dev in devs:
                 shutil.move("C:/Users/selhash/%s"%(dev),dump_dir)
-               #os.system("rmdir C:/Users/selhash/%s"%(dev))
+                #os.system("rmdir C:/Users/selhash/%s"%(dev))
         elif(stderr):
             self.top.insert(INSERT,"...ERROR...\n")
 
@@ -200,8 +197,8 @@ class AC_GUI(Frame):
         ## QUIT BUTTON
         self.QUIT = Button(self)
         self.QUIT["text"] = "QUIT"
-        self.QUIT["fg"]   = "red"
-        self.QUIT["command"] =  self.quit
+        self.QUIT["fg"] = "red"
+        self.QUIT["command"] = self.quit
         self.QUIT["width"] = 30
         #self.QUIT.pack({"side": "left"})
         #self.QUIT.pack()
