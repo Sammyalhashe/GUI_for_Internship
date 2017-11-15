@@ -1,38 +1,77 @@
-"""import Statements
-
-Importing Everything I need
-
-Use the struct module to store characters in a trie like this:
-
-node = struct.pack('c',"char")
-
-import struct
-"""
 
 class Node:
+    """Node to store characters in trie
 
-    def __init__(self,character,word_complete):
+    1) Initialized with a character to store, a dictionary of nodes that it points to, and a boolean value signifying if word is complete (default False)
+    2) has methods (explained below) that do most things the trie needs
+
+    Variables:
+         {[type]} -- [description]
+    """
+
+    def __init__(self,character,word_complete=False):
         self.storedChar = character
         self.pointed_nodes = {}
         self.complete_word = word_complete
 
     def add_child(self,node):
-        #self.pointed_nodes.append(node.storedChar)
+        """adds a child
+
+        adds a child to the dictionary of stored nodes this node points to
+
+        Arguments:
+            node {[Node]} -- [New Node object to add to pointed_nodes dictionary]
+        """
         self.pointed_nodes[node.storedChar] = node
 
     def isRoot(self):
+        """Tells us if this node is a root of a trie
+
+        returns a bool if so
+
+        Returns:
+            [BOOL] -- [True if a root of a trie]
+        """
         return self.storedChar == "*"
 
     def isWordComplete(self):
+        """easy way to see if the character we have gotten to so far is the end
+
+        returns True if so
+
+        Returns:
+            [BOOL] -- [True if the char stored is the last char of a word]
+        """
         return self.complete_word
 
     def pointsToChar(self,char):
+        """Tells us if the current node points to another node that stores character char
+
+        returns True if so
+
+        Arguments:
+            char {[str]} -- [checking if char is pointed to]
+
+        Returns:
+            [BOOL] -- [True if so]
+        """
         return char in self.pointed_nodes
 
     def isLastNode(self):
+        ## Checks if the current node doesn't point to anything else
         return self.pointed_nodes == {}
 
     def getNextNode(self,char):
+        """Returns the next node that the current node points to storing char
+
+        [returns the next node that the current node points to storing char]
+
+        Arguments:
+            char {[str]} -- [char that the next node stores]
+
+        Returns:
+            [Node] -- [Next node]
+        """
         return self.pointed_nodes[char]
 
 
