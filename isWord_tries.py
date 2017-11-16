@@ -6,7 +6,10 @@ class Node:
     2) has methods (explained below) that do most things the trie needs
 
     Variables:
-         {[type]} -- [description]
+         storedChar {[char]} -- [character the node holds in the trie]
+         pointed_nodes {[dict]} -- [a dictionary holding the child nodes that the current node has connected. The
+         key is the character and the value is the Node obect]
+         complete_word {[BOOL]} -- True if this character is the end of some word
     """
 
     def __init__(self,character,word_complete=False):
