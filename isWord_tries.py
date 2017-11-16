@@ -12,12 +12,12 @@ class Node:
          complete_word {[BOOL]} -- True if this character is the end of some word
     """
 
-    def __init__(self,character,word_complete=False):
+    def __init__(self, character, word_complete=False):
         self.storedChar = character
         self.pointed_nodes = {}
         self.complete_word = word_complete
 
-    def add_child(self,node):
+    def add_child(self, node):
         """adds a child
 
         adds a child to the dictionary of stored nodes this node points to
@@ -47,7 +47,7 @@ class Node:
         """
         return self.complete_word
 
-    def pointsToChar(self,char):
+    def pointsToChar(self, char):
         """Tells us if the current node points to another node that stores character char
 
         returns True if so
@@ -61,10 +61,10 @@ class Node:
         return char in self.pointed_nodes
 
     def isLastNode(self):
-        ## Checks if the current node doesn't point to anything else
+        # Checks if the current node doesn't point to anything else
         return self.pointed_nodes == {}
 
-    def getNextNode(self,char):
+    def getNextNode(self, char):
         """Returns the next node that the current node points to storing char
 
         [returns the next node that the current node points to storing char]
@@ -95,7 +95,7 @@ class word_trie:
         """
         self.root = Node("*")
 
-    def add_word(self,word):
+    def add_word(self, word):
         """Add a word to the try
 
         1) Goes through each character in the word
@@ -114,23 +114,23 @@ class word_trie:
         curr_node = self.root
         for char in word:
             if(not curr_node.pointsToChar(char)):
-                curr_node.add_child(Node(char,False))
+                curr_node.add_child(Node(char, False))
                 curr_node = curr_node.getNextNode(char)
-            elif(char==word[-1] and not curr_node.pointsToChar(char)):
-                curr_node.add_child(Node(char,True))
+            elif(char == word[-1] and not curr_node.pointsToChar(char)):
+                curr_node.add_child(Node(char, True))
                 curr_node = curr_node.getNextNode(char)
-                curr_node.add_child(Node("**",False))
+                curr_node.add_child(Node("**", False))
                 break
-            elif(char==word[-1] and curr_node.pointsToChar(char)):
+            elif(char == word[-1] and curr_node.pointsToChar(char)):
                 curr_node = curr_node.getNextNode(char)
                 curr_node.isWordComplete = True
                 if(not curr_node.pointsToChar("**")):
-                    curr_node.add_child(Node("**",False))
+                    curr_node.add_child(Node("**", False))
                 break
             else:
                 curr_node = curr_node.getNextNode(char)
 
-    def add_word_rec(self,word):
+    def add_word_rec(self, word):
         """Add a word to the try
 
         1) Goes through each character in the word
@@ -148,7 +148,7 @@ class word_trie:
         """
         self.traverse_trie_down(self.root,)
 
-    def traverse_trie_down(self,start_node,word):
+    def traverse_trie_down(self, start_node, word):
         """Used by the add_word_rec function to recursively traverse down and place characters
 
         1) Start at start node, if start node does not contain char you want to insert, create a new one that has it
@@ -160,9 +160,9 @@ class word_trie:
 
         """
 
-        if(len(word)==1):
+        if(len(word) == 1):
             if(not start_node.pointsToChar(word[0])):
-                start_node.add_child(Node(word[0],True))
+                start_node.add_child(Node(word[0], True))
                 start_node = start_node.getNextNode(word.pop(0))
                 start_node.add_child(Node("**"))
                 return
@@ -173,10 +173,10 @@ class word_trie:
 
         else:
             if(not start_node.pointsToChar(word[0])):
-                start_node.add_child(Node(word[0],True))
+                start_node.add_child(Node(word[0], True))
                 character = word.pop(0)
-                self.traverse_trie_down(start_node.getNextNode(character),word)
+                self.traverse_trie_down(start_node.getNextNode(character), word)
             else:
                 character = word.pop(0)
-                self.traverse_trie_down(start_node.getNextNode(character),word)
+                self.traverse_trie_down(start_node.getNextNode(character), word)
                 return

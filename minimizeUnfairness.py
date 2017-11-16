@@ -25,33 +25,36 @@ Example Input:
 Example Output:
     3 (the minimum unfairness)
 """
+
+
 def calcUnfairness(reduced_array):
-    return (reduced_array[-1]-reduced_array[0])
+    return (reduced_array[-1] - reduced_array[0])
 
-def minimizeUnfairness(n,k,arr):
-    unfairness = (arr[k-1]-arr[0])
 
-    if len(arr)==k or len(arr)==1:
+def minimizeUnfairness(n, k, arr):
+    unfairness = (arr[k - 1] - arr[0])
+
+    if len(arr) == k or len(arr) == 1:
         unfairness = calcUnfairness(arr)
     else:
-        for i in range(1,n-(k-1)):
-            if((arr[i+k-1]-arr[i])<unfairness):
-                unfairness = (arr[i+k-1]-arr[i])
+        for i in range(1, n - (k - 1)):
+            if((arr[i + k - 1] - arr[i]) < unfairness):
+                unfairness = (arr[i + k - 1] - arr[i])
             if(unfairness == 0):
                 break
     print(unfairness)
 
-        ## First Greedy Idea: Farthest from average remove and test again
-        #average = int(sum(arr)/len(arr))
-        #ldev = int(abs(arr[-1]-average))
-        #sdev = int(abs(arr[0]-average))
+    # First Greedy Idea: Farthest from average remove and test again
+    # average = int(sum(arr)/len(arr))
+    # ldev = int(abs(arr[-1]-average))
+    # sdev = int(abs(arr[0]-average))
 
-        #if (ldev>=sdev):
-        #    sorts.pop()
-        #    return minimizeUnfairness(k,sorts)
-        #else:
-        #    sorts.pop(0)
-        #    return minimizeUnfairness(k,sorts)
+    # if (ldev>=sdev):
+    #    sorts.pop()
+    #    return minimizeUnfairness(k,sorts)
+    # else:
+    #    sorts.pop(0)
+    #    return minimizeUnfairness(k,sorts)
 
 
 if __name__ == '__main__':
@@ -62,10 +65,7 @@ if __name__ == '__main__':
     for i in range(N):
         vals.append(int(input().strip()))
 
-    if(K==0):
+    if(K == 0):
         print("Should at least be 1")
     else:
-        reduced_arr = minimizeUnfairness(N,K,sorted(vals))
-
-
-
+        reduced_arr = minimizeUnfairness(N, K, sorted(vals))
