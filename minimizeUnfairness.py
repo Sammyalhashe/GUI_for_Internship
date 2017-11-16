@@ -66,6 +66,3 @@ if __name__ == '__main__':
         print("Should at least be 1")
     else:
         reduced_arr = minimizeUnfairness(N,K,sorted(vals))
-
-
-
