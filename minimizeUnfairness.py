@@ -68,8 +68,4 @@ if __name__ == '__main__':
     if(K == 0):
         print("Should at least be 1")
     else:
-<<<<<<< HEAD
-        reduced_arr = minimizeUnfairness(N,K,sorted(vals))
-=======
         reduced_arr = minimizeUnfairness(N, K, sorted(vals))
->>>>>>> 7a4d75ee84ceb6ebac589c8e386d529b5cbf7e5f
