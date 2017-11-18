@@ -14,16 +14,16 @@ class Node {
     }
 }
 
-class AVLtree {
+public class AVLtree {
 
     Node root;
 
-    AVLtree (Node root) {
+    public AVLtree (Node root) {
         // Constructor
         root = root;
     }
 
-    int height (Node N) {
+    static int height (Node N) {
         if(N == null) {
             return -1;
         } else {
@@ -31,15 +31,17 @@ class AVLtree {
         }
     }
 
-    int max(int a, int b) {
+    static int max(int a, int b) {
         return (a>b)?a:b;
     }
 
-    int BalanceFactor(Node node) {
+    static int BalanceFactor(Node node) {
         if(node == null) {
-            return -1;
+            return 0;
+        } else {
+            return (height(node.left) - height(node.right));
         }
-        return (node.left.ht - node.right.ht);
+
     }
 
     Node rightRotate(Node y) {
@@ -51,8 +53,8 @@ class AVLtree {
         y.left = T2;
 
         // Update heights
-        y.height = max(height(y.left), height(y.right)) + 1;
-        x.height = max(height(x.left), height(x.right)) + 1;
+        y.ht = max(height(y.left), height(y.right)) + 1;
+        x.ht = max(height(x.left), height(x.right)) + 1;
 
         // Return new root
         return x;
@@ -67,8 +69,8 @@ class AVLtree {
         y.right =  T2;
 
         // Update heights
-        y.height = max(height(y.left),height(y.right)) + 1;
-        x.height = max(height(x.left),height(x.right)) + 1;
+        y.ht = max(height(y.left),height(y.right)) + 1;
+        x.ht = max(height(x.left),height(x.right)) + 1;
 
         return x; // new root
     }
@@ -87,33 +89,35 @@ class AVLtree {
             return node;
 
         /* 2. Update height of this ancestor node */
-        node.height = 1 + max(height(node.left),
+        node.ht = 1 + max(height(node.left),
                               height(node.right));
 
         /* 3. Get the balance factor of this ancestor
               node to check whether this node became
               unbalanced */
-        int balance = getBalance(node);
+        int balance = BalanceFactor(node);
 
         // If this node becomes unbalanced, then there
         // are 4 cases Left Left Case
-        if (balance > 1 && key < node.left.key)
-            return rightRotate(node);
+        if (balance > 1 && key < node.left.key) {
+            return this.rightRotate(node);
+        }
 
         // Right Right Case
-        if (balance < -1 && key > node.right.key)
-            return leftRotate(node);
+        if (balance < -1 && key > node.right.key) {
+            return this.leftRotate(node);
+        }
 
         // Left Right Case
         if (balance > 1 && key > node.left.key) {
             node.left = leftRotate(node.left);
-            return rightRotate(node);
+            return this.rightRotate(node);
         }
 
         // Right Left Case
         if (balance < -1 && key < node.right.key) {
             node.right = rightRotate(node.right);
-            return leftRotate(node);
+            return this.leftRotate(node);
         }
 
         /* return the (unchanged) node pointer */
