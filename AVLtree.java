@@ -44,6 +44,7 @@ public class AVLtree {
 
     }
 
+
     Node rightRotate(Node y) {
         Node x = y.left;
         Node T2 = x.right;
