@@ -21,6 +21,7 @@ dirdic = {
     'title': 'Please Select Directory where TMG script results are'
 }
 
+
 dump_dic = {
     'title': 'Please select where to dump the files'
 }
@@ -73,23 +74,28 @@ class AC_GUI(Frame):
     def run_timingScript(self):
         pass
         #root = Tk(screenName=None, baseName=None, className='Tk', useTk=1, sync=0, use=None)
-        script_filename = tkFileDialog.askopenfilename(initialdir="/", title="Select file", filetypes=(("shell files", "*.sh"), ("all files", "*.*")))
-        self.top.insert(INSERT, "Script Chosen: %s\n" % ("None" if script_filename == "" else script_filename))
+        script_filename = tkFileDialog.askopenfilename(
+            initialdir="/", title="Select file", filetypes=(("shell files", "*.sh"), ("all files", "*.*")))
+        self.top.insert(INSERT, "Script Chosen: %s\n" %
+                        ("None" if script_filename == "" else script_filename))
         if(script_filename != ""):
             direc1 = script_filename.replace("Z:", "/soft/dct")
             print direc1
             conn = self.SSHCONNECT(username, password)
             print str(conn) + "\n"
             if(conn == 0):  # IF ABLE TO CONNECT
-                self.top.insert(INSERT, "Correct Username %s and Password %s\n" % (username, password))
-                stdin, stdout, stderr = self.shell_handler.execute("sh %s" % (direc1))
+                self.top.insert(
+                    INSERT, "Correct Username %s and Password %s\n" % (username, password))
+                stdin, stdout, stderr = self.shell_handler.execute(
+                    "sh %s" % (direc1))
                 if(stderr):
                     self.top.insert(INSERT, "Error: %s\n" % (stderr))
                 self.top.insert(INSERT, "connection closed\n")
             elif(conn == 1):
                 self.top.insert(INSERT, "Connection Error\n")
             elif(conn == 2):
-                self.top.insert(INSERT, "Authentication error: wrong Username/Password\n")
+                self.top.insert(
+                    INSERT, "Authentication error: wrong Username/Password\n")
         else:
             self.top.insert(INSERT, "Process Aborted\n")
 
@@ -97,20 +103,25 @@ class AC_GUI(Frame):
     def concatenate(self):
 
         dirname = tkFileDialog.askdirectory(**dirdic)
-        self.top.insert(INSERT, "Chose Directory: %s\n" % ("None" if dirname == "" else dirname))
+        self.top.insert(INSERT, "Chose Directory: %s\n" %
+                        ("None" if dirname == "" else dirname))
         # print dirname
         dirname1 = dirname.replace('/', '\\')
         temp_prompt = tkSimpleDialog.askstring("Temp Prompt", 'enter temp')
-        self.top.insert(INSERT, "TEMP: %s\n" % ("None" if temp_prompt == "" else temp_prompt))
+        self.top.insert(INSERT, "TEMP: %s\n" %
+                        ("None" if temp_prompt == "" else temp_prompt))
         volt_prompt = tkSimpleDialog.askstring("Volt Prompt", 'enter volt')
-        self.top.insert(INSERT, "VOLT: %s\n" % ("None" if volt_prompt == "" else volt_prompt))
+        self.top.insert(INSERT, "VOLT: %s\n" %
+                        ("None" if volt_prompt == "" else volt_prompt))
         dump_dir = tkFileDialog.askdirectory(**dump_dic)
         self.dump_dir1 = dump_dir.replace('/', '\\')
 
         # runs concatenation script in my shares all
         if(dirname != "" and temp_prompt != "" and volt_prompt != "" and self.dump_dir1 != ""):
-            self.top.insert(INSERT, "...Concatenating Timing Files into 1...\n")
-            os.system("python \\\sv-fs-01\Shares\All\sammy_alhashemi\AC_SCRIPTS\AC_tmg_file_concat.py %s %s %s %s" % (dirname1, temp_prompt, volt_prompt, self.dump_dir1))
+            self.top.insert(
+                INSERT, "...Concatenating Timing Files into 1...\n")
+            os.system("python \\\sv-fs-01\Shares\All\sammy_alhashemi\AC_SCRIPTS\AC_tmg_file_concat.py %s %s %s %s" %
+                      (dirname1, temp_prompt, volt_prompt, self.dump_dir1))
             self.top.insert(INSERT, "    DONE    \n")
         else:
             self.top.insert(INSERT, "...Process aborted...\n")
@@ -120,14 +131,17 @@ class AC_GUI(Frame):
         dump_dir = tkFileDialog.askdirectory(**import_dic)
         dump_dir1 = dump_dir.replace('/', '\\')
         dump_dir1 = dump_dir1.encode('ascii')
-        self.top.insert(INSERT, "Chose Dump Directory: %s\n" % ("None" if dump_dir == "" else dump_dir))
+        self.top.insert(INSERT, "Chose Dump Directory: %s\n" %
+                        ("None" if dump_dir == "" else dump_dir))
 
         if(dump_dir1 != ""):
-            files_to_import_to_dump_dir = tkFileDialog.askopenfilenames(parent=root, title='Choose files to import to SIL_DATA')
+            files_to_import_to_dump_dir = tkFileDialog.askopenfilenames(
+                parent=root, title='Choose files to import to SIL_DATA')
 
             self.top.insert(INSERT, "...Importing ISE Files...\n")
 
-            files = list(files_to_import_to_dump_dir)  # askopenfilenames returns with unicode encoding
+            # askopenfilenames returns with unicode encoding
+            files = list(files_to_import_to_dump_dir)
             # convert to ascii
             files_ascii = list(map(lambda x: x.encode('ascii'), files))
             # print(files_ascii)
@@ -152,12 +166,15 @@ class AC_GUI(Frame):
         Data_dir1 = Data_dir1.encode('ascii')
 
         if(Data_dir1 != ""):
-            self.top.insert(INSERT, "Chose Silicon Directory: %s\n" % ("None" if Data_dir1 == "" else Data_dir1))
+            self.top.insert(INSERT, "Chose Silicon Directory: %s\n" %
+                            ("None" if Data_dir1 == "" else Data_dir1))
             self.CRUNCHED_dir = Data_dir1 + "\..\CRUNCHED"
-            self.top.insert(INSERT, "CRUNCHED Directory: %s\n" % ("None" if self.CRUNCHED_dir == "" else self.CRUNCHED_dir))
+            self.top.insert(INSERT, "CRUNCHED Directory: %s\n" % (
+                "None" if self.CRUNCHED_dir == "" else self.CRUNCHED_dir))
 
             # Run parser
-            os.system("perl \\\sv-fs-01\Shares\All\sammy_alhashemi\AC_SCRIPTS\parse_ac_standby.pl %s" % (Data_dir1))
+            os.system(
+                "perl \\\sv-fs-01\Shares\All\sammy_alhashemi\AC_SCRIPTS\parse_ac_standby.pl %s" % (Data_dir1))
             os.system("cd %s" % (Data_dir1))
             os.system("cd ..")
             if(not os.path.isfile("CRUNCHED")):
@@ -173,19 +190,26 @@ class AC_GUI(Frame):
     # YOU GIVE THE SILICON(CRUNCHED)+TIMING DATA AND RUNS A PERL SCRIPT THAT GENERATES RATIOS TO PLOT
     def run_all(self):
         pass
-        proc = Popen('C:\cygwin64\Cygwin.bat', stdin=PIPE, stdout=PIPE, bufsize=1)
+        proc = Popen('C:\cygwin64\Cygwin.bat',
+                     stdin=PIPE, stdout=PIPE, bufsize=1)
 
-        dev_prompt = tkSimpleDialog.askstring("dev Prompt", 'enter space-separated devices')
+        dev_prompt = tkSimpleDialog.askstring(
+            "dev Prompt", 'enter space-separated devices')
         devs = dev_prompt.split(" ")
         tmg_dir = tkFileDialog.askdirectory(**tmg_dic)
-        self.top.insert(INSERT, "TMG Directory: %s" % ("None" if tmg_dir == "" else tmg_dir))
+        self.top.insert(INSERT, "TMG Directory: %s" %
+                        ("None" if tmg_dir == "" else tmg_dir))
         sil_dir = tkFileDialog.askdirectory(**sil_dic)
-        self.top.insert(INSERT, "Silicon Directory: %s" % ("None" if sil_dir == "" else sil_dir))
+        self.top.insert(INSERT, "Silicon Directory: %s" %
+                        ("None" if sil_dir == "" else sil_dir))
 
         dump_dir = tkFileDialog.askdirectory(**dump_dic)
-        self.top.insert(INSERT, "Chose Dump Directory: %s" % ("None" if dump_dir == "" else dump_dir))
-        stdout, stderr = proc.communicate("sh /cygdrive/a/AC_SCRIPTS/run_all.sh %s %s %s" % (tmg_dir, sil_dir, dev_prompt))
-        self.top.insert(INSERT, "...Generating Ratios of SIL and TMG Data...\n")
+        self.top.insert(INSERT, "Chose Dump Directory: %s" %
+                        ("None" if dump_dir == "" else dump_dir))
+        stdout, stderr = proc.communicate(
+            "sh /cygdrive/a/AC_SCRIPTS/run_all.sh %s %s %s" % (tmg_dir, sil_dir, dev_prompt))
+        self.top.insert(
+            INSERT, "...Generating Ratios of SIL and TMG Data...\n")
         self.sysGUIInsert(stdout + "\n")
 
         if(stdout):
@@ -279,13 +303,15 @@ class ShellHandler:
 
     def connect(self):
         try:
-            self.ssh.connect(self.host, username=self.user, password=self.psw, port=22)
+            self.ssh.connect(self.host, username=self.user,
+                             password=self.psw, port=22)
             channel = self.ssh.invoke_shell()
             self.stdin = channel.makefile('wb')
             self.stdout = channel.makefile('r')
         except paramiko.ssh_exception.AuthenticationException as e:
             print "Incorrect Username %s and Password %s " % (self.user, self.pwd)
-            self.top.insert(INSERT, "Incorrect Username %s and Password %s " % (self.user, self.pwd))
+            self.top.insert(
+                INSERT, "Incorrect Username %s and Password %s " % (self.user, self.pwd))
             return 2
         except socket.error as e:
             if e.errno == errno.ECONNREFUSED:
@@ -376,7 +402,7 @@ class ShellHandler:
         # if sherr and cmd in sherr[0]:
         #     sherr.pop(0)
 
-####################### WHERE CODE IS IMPLEMENTED NAD CLASSES INSTANTIATED #################################
+####################### WHERE CODE IS IMPLEMENTED AND CLASSES INSTANTIATED #################################
 
 
 root = Tk()
