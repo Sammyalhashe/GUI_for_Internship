@@ -21,6 +21,7 @@ dirdic = {
     'title': 'Please Select Directory where TMG script results are'
 }
 
+
 dump_dic = {
     'title': 'Please select where to dump the files'
 }
@@ -401,7 +402,7 @@ class ShellHandler:
         # if sherr and cmd in sherr[0]:
         #     sherr.pop(0)
 
-####################### WHERE CODE IS IMPLEMENTED NAD CLASSES INSTANTIATED #################################
+####################### WHERE CODE IS IMPLEMENTED AND CLASSES INSTANTIATED #################################
 
 
 root = Tk()
