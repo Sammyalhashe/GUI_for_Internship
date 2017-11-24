@@ -1,6 +1,8 @@
 # Python code to insert a node in AVL tree
 
 # Generic tree node class
+
+
 class TreeNode(object):
     def __init__(self, val):
         self.val = val
@@ -10,11 +12,17 @@ class TreeNode(object):
 
 # AVL tree class which supports the
 # Insert operation
+
+
 class AVL_Tree(object):
+
+    def __init__(self, first_val):
+        self.root = self.insert(None, first_val)
 
     # Recursive function to insert key in
     # subtree rooted with node and returns
     # new root of subtree.
+
     def insert(self, root, key):
 
         # Step 1 - Perform normal BST
@@ -22,13 +30,15 @@ class AVL_Tree(object):
             return TreeNode(key)
         elif key < root.val:
             root.left = self.insert(root.left, key)
-        else:
+        elif (key > root.val):
             root.right = self.insert(root.right, key)
+        else:
+            return root  # no duplicated allowed
 
         # Step 2 - Update the height of the
         # ancestor node
         root.height = 1 + max(self.getHeight(root.left),
-                           self.getHeight(root.right))
+                              self.getHeight(root.right))
 
         # Step 3 - Get the balance factor
         balance = self.getBalance(root)
@@ -66,9 +76,9 @@ class AVL_Tree(object):
 
         # Update heights
         z.height = 1 + max(self.getHeight(z.left),
-                         self.getHeight(z.right))
+                           self.getHeight(z.right))
         y.height = 1 + max(self.getHeight(y.left),
-                         self.getHeight(y.right))
+                           self.getHeight(y.right))
 
         # Return the new root
         return y
@@ -84,9 +94,9 @@ class AVL_Tree(object):
 
         # Update heights
         z.height = 1 + max(self.getHeight(z.left),
-                        self.getHeight(z.right))
+                           self.getHeight(z.right))
         y.height = 1 + max(self.getHeight(y.left),
-                        self.getHeight(y.right))
+                           self.getHeight(y.right))
 
         # Return the new root
         return y
