@@ -1,8 +1,13 @@
 class Heap(object):
-    """docstring for Heap"""
+    """Min Heap:
+
+    Binary Tree with following properties:
+    1) Parent is always less in value than children
+    2) has height of log(N) (base 2)
+    """
 
     def __init__(self):
-        super(Heap, self).__init__()
+        super(Heap, self).__init__()  # for multi-inheritance
         self.heap = [0]
         self.current_size = 0
 
@@ -38,7 +43,9 @@ class Heap(object):
             mc = self.getSmallestChild(i)
             if(self.heap[mc] < self.heap[i]):
                 self.swap(i, mc)
-            i = mc
+                i = mc
+            else:
+                break
 
     def getSmallestChild(self, i):
         if(2 * i + 1 > self.current_size):
@@ -56,3 +63,11 @@ class Heap(object):
         while (index > 0):
             self.bubbleDown(index)
             index -= 1
+
+
+if __name__ == '__main__':
+    test = [1, 5, 3, 4, 6, 7, 5, 3]
+    print(test)
+    Heap = Heap()
+    Heap.buildHeap(test)
+    print(Heap.heap)

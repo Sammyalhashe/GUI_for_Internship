@@ -1,7 +1,7 @@
 #!/usr/bin/python
 ''' Import Statements '''
 import os
-from Tkinter import *
+from Tkinter import *  # Syntax problem on Mac is because it's tkinter for Python3
 import tkFileDialog
 import tkSimpleDialog
 from subprocess import PIPE, Popen
