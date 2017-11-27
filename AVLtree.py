@@ -16,9 +16,13 @@ class TreeNode(object):
 
 class AVL_Tree(object):
 
+    def __init__(self, first_val):
+        self.root = self.insert(None, first_val)
+
     # Recursive function to insert key in
     # subtree rooted with node and returns
     # new root of subtree.
+
     def insert(self, root, key):
 
         # Step 1 - Perform normal BST
@@ -26,8 +30,10 @@ class AVL_Tree(object):
             return TreeNode(key)
         elif key < root.val:
             root.left = self.insert(root.left, key)
-        else:
+        elif (key > root.val):
             root.right = self.insert(root.right, key)
+        else:
+            return root  # no duplicated allowed
 
         # Step 2 - Update the height of the
         # ancestor node

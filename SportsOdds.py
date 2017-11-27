@@ -10,11 +10,11 @@ def odds(string):
             if(char == "/"):
                 nums.append(int(build.strip()))
                 build = ""
-        if(i == len(string)-1):
+        if(i == len(string) - 1):
             nums.append(int(build.strip()))
         i += 1
 
-    return (nums[1]/(nums[0]+nums[1]))
+    return (nums[1] / (nums[0] + nums[1]))
 
 
 def main():
@@ -26,9 +26,9 @@ def main():
     nad = odds(NadalOdds)
     djok = odds(DjokovicOdds)
     murr = odds(MurrayOdds)
-    print("%f percent"%(fed*100))
-    print("%f percent"%(nad*100))
-    print("%f percent"%(djok*100))
-    print("%f percent"%(murr*100))
+    print("%f percent" % (fed * 100))
+    print("%f percent" % (nad * 100))
+    print("%f percent" % (djok * 100))
+    print("%f percent" % (murr * 100))
 
 main()
