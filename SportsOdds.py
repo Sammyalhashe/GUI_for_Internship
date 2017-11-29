@@ -41,4 +41,5 @@ def main():
     print("%f percent" % (djok * 100))
     print("%f percent" % (murr * 100))
 
+
 main()
