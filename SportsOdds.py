@@ -1,4 +1,14 @@
 def odds(string):
+    """You give sports odds (ie. 4/1, and it gives actual percent outputs)
+
+    [
+    runs through input string and picks up the numbers on both sides of bracket;
+    is flexible, does not need the same input format, all it needs is numbers on both sides of a "/"
+    ]
+
+    Arguments:
+        string {str} -- [input string containing the odds and includes two numbers separated by "/"]
+    """
     nums = []
     build = ""
     i = 0

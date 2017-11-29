@@ -124,5 +124,5 @@ class AVL_Tree(object):
 
 
 # Driver program to test above function
-myTree = AVL_Tree()
+myTree = AVL_Tree(0)
 root = None
