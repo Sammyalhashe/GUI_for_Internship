@@ -1,4 +1,5 @@
-from mechanize import Browser, CookieJar
+from mechanize import Browser
+from mechanize import CookieJar
 
 """Constants
 

@@ -1,16 +1,18 @@
 #!/usr/bin/python
 ''' Import Statements '''
-import os
-from Tkinter import *  # Syntax problem on Mac is because it's tkinter for Python3
-import tkFileDialog
-import tkSimpleDialog
-from subprocess import PIPE, Popen
-from paramiko import *
-import paramiko
+import errno
 import glob
+import os
+import paramiko
 import shutil
 import socket
-import errno
+import tkFileDialog
+import tkSimpleDialog
+
+from Tkinter import *  # Syntax problem on Mac is because it's tkinter for Python3
+from paramiko import *
+from subprocess import PIPE
+from subprocess import Popen
 
 #################DEFINTIONS USED THROUGHOUT CODE########################
 hostname = '10.241.70.36'  # robinson
