@@ -11,6 +11,7 @@ import glob
 import shutil
 import socket
 import errno
+import time
 
 #################DEFINTIONS USED THROUGHOUT CODE########################
 hostname = '10.241.70.36'  # robinson
@@ -65,30 +66,46 @@ class AC_GUI(Frame):
 
     # SSH CONNECTION (NEEDS WORK)
     def SSHCONNECT(self, user, pwd):
-        self.shell_handler = ShellHandler(hostname, user, pwd)
+        self.shell_handler = ShellHandler(self.top, hostname, user, pwd)
         paramiko.util.log_to_file("filename.log")
-        connected = self.shell_handler.connect()
-        return connected
+
+        # Need to return ssh or it goes out of scope
+        ssh, connected = self.shell_handler.connect()
+
+        return ssh, connected
 
     # RUNNING OLIVIER's TIMING SCRIPTS (NEEDS WORK)
     def run_timingScript(self):
         pass
         #root = Tk(screenName=None, baseName=None, className='Tk', useTk=1, sync=0, use=None)
         script_filename = tkFileDialog.askopenfilename(
-            initialdir="/", title="Select file", filetypes=(("shell files", "*.sh"), ("all files", "*.*")))
+            initialdir="/", title="Select Timing script (*.sh) to run", filetypes=(("shell files", "*.sh"), ("all files", "*.*")))
+
         self.top.insert(INSERT, "Script Chosen: %s\n" %
                         ("None" if script_filename == "" else script_filename))
+
         if(script_filename != ""):
             direc1 = script_filename.replace("Z:", "/soft/dct")
-            print direc1
-            conn = self.SSHCONNECT(username, password)
+            self.top.insert(
+                INSERT, "Corrected Script name in robinson server: %s\n" % direc1)
+
+            # Need to return ssh or it goes out of scope
+            ssh, conn = self.SSHCONNECT(username, password)
+
             print str(conn) + "\n"
             if(conn == 0):  # IF ABLE TO CONNECT
                 self.top.insert(
                     INSERT, "Correct Username %s and Password %s\n" % (username, password))
-                stdin, stdout, stderr = self.shell_handler.execute(
+                ssh, stdin, stdout, stderr = self.shell_handler.execute(
                     "sh %s" % (direc1))
-                if(stderr):
+
+                self.top.insert(
+                    INSERT, "stdout: %s\n" % (stdout))
+
+                # close the stdin stream
+                stdin.close()
+
+                if(stderr is not None):
                     self.top.insert(INSERT, "Error: %s\n" % (stderr))
                 self.top.insert(INSERT, "connection closed\n")
             elif(conn == 1):
@@ -159,7 +176,8 @@ class AC_GUI(Frame):
         else:
             self.top.insert(INSERT, "...Process aborted...\n")
 
-    # RUNS THE SILICON DATA PARSER FROM ISE AND PUTS IT INTO A FOLDER CALLED 'CRUNCHED'
+    # RUNS THE SILICON DATA PARSER FROM ISE AND PUTS IT INTO A FOLDER CALLED
+    # 'CRUNCHED'
     def runparser(self):
         Data_dir = tkFileDialog.askdirectory(**Sil_data_dic)
         Data_dir1 = Data_dir.replace('/', '\\')
@@ -187,7 +205,8 @@ class AC_GUI(Frame):
         else:
             self.top.insert(INSERT, "...Process aborted...\n")
 
-    # YOU GIVE THE SILICON(CRUNCHED)+TIMING DATA AND RUNS A PERL SCRIPT THAT GENERATES RATIOS TO PLOT
+    # YOU GIVE THE SILICON(CRUNCHED)+TIMING DATA AND RUNS A PERL SCRIPT THAT
+    # GENERATES RATIOS TO PLOT
     def run_all(self):
         pass
         proc = Popen('C:\cygwin64\Cygwin.bat',
@@ -294,20 +313,25 @@ class AC_GUI(Frame):
 
 class ShellHandler:
 
-    def __init__(self, host, user, psw):
+    def __init__(self, top, host, user, psw):
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.host = host
         self.user = user
         self.psw = psw
+        self.top = top
 
     def connect(self):
         try:
+
+            self.ssh.load_system_host_keys(filename=None)
             self.ssh.connect(self.host, username=self.user,
                              password=self.psw, port=22)
+
             channel = self.ssh.invoke_shell()
-            self.stdin = channel.makefile('wb')
+            # self.stdin = channel.makefile('wb')
             self.stdout = channel.makefile('r')
+            print "Correct Username %s and Password %s\n" % (self.user, self.psw)
         except paramiko.ssh_exception.AuthenticationException as e:
             print "Incorrect Username %s and Password %s " % (self.user, self.pwd)
             self.top.insert(
@@ -323,9 +347,7 @@ class ShellHandler:
                 self.top.insert(INSERT, "Something went wrong\n")
                 return 1
 
-        print "Correct Username %s and Password %s\n" % (self.user, self.psw)
-
-        return 0
+        return self.ssh, 0
 
     def __del__(self):
         self.ssh.close()
@@ -338,6 +360,9 @@ class ShellHandler:
             if(stderr):
                 for errors in stderr.readlines():
                     print errors.encode('ascii')
+                    self.top.insert(INSERT, "Something went wrong: %s\n" % (
+                        errors.encode('ascii')))
+            # time.sleep(21600)
             # print(stderr.readlines())
             # print_counter = 0
             # while(not stdout.channel.exit_status_ready() and not stdout.channel.recv_ready()):
@@ -353,7 +378,7 @@ class ShellHandler:
             if self.ssh is not None:
                 self.__del__()
 
-        return stdin, stdout, stderr
+        return self.ssh, stdin, stdout, stderr
         """
 
         :param cmd: the command to be executed on the remote computer
@@ -402,7 +427,7 @@ class ShellHandler:
         # if sherr and cmd in sherr[0]:
         #     sherr.pop(0)
 
-####################### WHERE CODE IS IMPLEMENTED AND CLASSES INSTANTIATED #################################
+# WHERE CODE IS IMPLEMENTED AND CLASSES INSTANTIATED
 
 
 root = Tk()
