@@ -69,7 +69,7 @@ public class AVLtree {
         x.left = y;
         y.right =  T2;
 
-        // Update heights
+        // Update heights: always one more than children height
         y.ht = max(height(y.left),height(y.right)) + 1;
         x.ht = max(height(x.left),height(x.right)) + 1;
 

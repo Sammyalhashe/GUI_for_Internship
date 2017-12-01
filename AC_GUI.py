@@ -6,7 +6,7 @@ import os
 import paramiko
 import shutil
 import socket
-<< << << < HEAD
+
 import tkFileDialog
 import tkSimpleDialog
 
@@ -14,7 +14,6 @@ from Tkinter import *  # Syntax problem on Mac is because it's tkinter for Pytho
 from paramiko import *
 from subprocess import PIPE
 from subprocess import Popen
-import errno
 import time
 
 
@@ -330,27 +329,28 @@ class ShellHandler:
         try:
 
             self.ssh.load_system_host_keys(filename=None)
+            self.top.insert(INSERT, "connecting...\n")
             self.ssh.connect(self.host, username=self.user,
                              password=self.psw, port=22)
+            time.sleep(5)
 
             channel = self.ssh.invoke_shell()
-            # self.stdin = channel.makefile('wb')
+            self.stdin = channel.makefile('wb')
             self.stdout = channel.makefile('r')
             print "Correct Username %s and Password %s\n" % (self.user, self.psw)
         except paramiko.ssh_exception.AuthenticationException as e:
             print "Incorrect Username %s and Password %s " % (self.user, self.pwd)
             self.top.insert(
                 INSERT, "Incorrect Username %s and Password %s " % (self.user, self.pwd))
-            return 2
+            return self.ssh, 2
         except socket.error as e:
             if e.errno == errno.ECONNREFUSED:
                 print "Connection Error\n"
                 self.top.insert(INSERT, "Connection Error\n")
-                return 1
             else:
                 print "Something went wrong\n"
                 self.top.insert(INSERT, "Something went wrong\n")
-                return 1
+            return self.ssh, 1
 
         return self.ssh, 0
 
@@ -361,7 +361,11 @@ class ShellHandler:
         try:
             #ssh_stdin,ssh_stdout,ssh_stderr = self.ssh.exec_command("sh %s"%(direc1))
             #ssh_stdin,ssh_stdout,ssh_stderr = self.shell_handler.execute("sh %s"%(direc1))
+            self.top.insert(INSERT, "About to execute\n")
             stdin, stdout, stderr = self.ssh.exec_command(cmd)
+
+            time.sleep(5)
+
             if(stderr):
                 for errors in stderr.readlines():
                     print errors.encode('ascii')
@@ -369,15 +373,16 @@ class ShellHandler:
                         errors.encode('ascii')))
             # time.sleep(21600)
             # print(stderr.readlines())
-            # print_counter = 0
-            # while(not stdout.channel.exit_status_ready() and not stdout.channel.recv_ready()):
-            #     print ("stdout:",stdout.channel.exit_status_ready(), stdout.channel.recv_ready())
-            #     if(print_counter%100==0):
-            #         print("script running\n")
-            #         #AC_GUI.top.insert(INSERT,"script running\n")
-            #     time.sleep(0.1)
+            print_counter = 0
+            while(not stdout.channel.exit_status_ready() and not stdout.channel.recv_ready()):
+                print("stdout:", stdout.channel.exit_status_ready(),
+                      stdout.channel.recv_ready())
+                if(print_counter % 100 == 0):
+                    print("script running\n")
+                    self.top.insert(INSERT, "script running\n")
+                time.sleep(5)
 
-            #     print_counter+=1
+                print_counter += 1
 
         finally:
             if self.ssh is not None:
