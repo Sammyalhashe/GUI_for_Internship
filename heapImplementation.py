@@ -48,6 +48,8 @@ class Heap(object):
                 break
 
     def getSmallestChild(self, i):
+        # don't have to worry about 2*i being larger as this function wouldn't
+        # be called
         if(2 * i + 1 > self.current_size):
             return 2 * i
         else:
