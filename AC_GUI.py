@@ -6,7 +6,7 @@ import os
 import paramiko
 import shutil
 import socket
-<< << << < HEAD
+
 import tkFileDialog
 import tkSimpleDialog
 
