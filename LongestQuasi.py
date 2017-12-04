@@ -17,15 +17,34 @@ testse = [0, 999, 1000]
 
 
 def get_amp(array):
+    """returns amplitude of sorted array
+
+    [Amplitude of an array is its largest element minus its smallest one]
+
+    Arguments:
+        array {[type]} -- [description]
+
+    Returns:
+        number -- amplitude of the array (which is already sorted)
+                  amplitude of an empty array is 0
+    """
     if(array == []):
         return 0
     else:
         return (array[-1] - array[0])
 
-# helper function to see if sorted array is quasi constant
-
 
 def isQuasi(array):
+    """helper function to see if sorted array is quasi constant
+
+    [helper function to see if sorted array is quasi constant]
+
+    Arguments:
+        array {[int]} -- [sorted integer array]
+
+    Returns:
+        bool -- [True if sorted array is Quasi constant]
+    """
     if(get_amp(array) < 2):
         return True
     return False
@@ -36,7 +55,7 @@ Logic:
 0) Sort the array to greedily get all elements closest in value together
 1) Check all bases cases
 2) Start with a default length of 1 (as 0 would have been returned anyways so pointless to check again
-3) Run two indices (i,j; i<=j) until i = len(array)) to look at subsequences of sorted array
+3) Run two indices (i,j; j<=i) until i = len(array)) to look at subsequences of sorted array
     a) i "extends" the array increases the size of the subsequence being looked at
     b) j "De-Extends" the array, decreasing the size of the array being looked at
 4) For each subsequence, check if it's quasi
