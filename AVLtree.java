@@ -20,7 +20,7 @@ public class AVLtree {
 
     public AVLtree (Node root) {
         // Constructor
-        root = root;
+        this.root = root;
     }
 
     static int height (Node N) {
