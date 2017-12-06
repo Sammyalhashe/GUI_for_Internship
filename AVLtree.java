@@ -16,7 +16,7 @@ class Node {
 
 public class AVLtree {
 
-    Node root;
+    public Node root;
 
     public AVLtree (Node root) {
         // Constructor
