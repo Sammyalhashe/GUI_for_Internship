@@ -29,3 +29,6 @@ public static void main(String[] args){
 }//end of class
 
 
+/*-------------------------------------------------------------------------------------*/
+int n = 12;
+String s = Integer.toString(n); // casts to string as name suggests
