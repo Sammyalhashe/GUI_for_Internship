@@ -7,10 +7,10 @@ class Node {
 
     Node (int d) {
         //Constructor
-        val = d;
-        ht = 0; // height of leaf node is 0
-        left = null;
-        right = null;
+        this.val = d;
+        this.ht = 0; // height of leaf node is 0
+        this.left = null;
+        this.right = null;
     }
 }
 
