@@ -1,3 +1,6 @@
+from heapImplementation import Heap
+
+
 class Building(object):
     """docstring for Building"""
 
@@ -5,7 +8,7 @@ class Building(object):
         super().__init__()
         self.N = N
         self.NumElev = NumElev
-        self.__Elevator_List = []
+        self.__Elevator_List = {}
 
     @property
     def N(self):
@@ -27,7 +30,7 @@ class Building(object):
     def NumElev(self, NumElev):
         self.__NumElev = NumElev
         for i in range(self.__NumElev):
-            self.__Elevator_List.append(Elevator(self))
+            self.__Elevator_List[i] = Elevator(self)
 
 
 class Elevator(object):

@@ -11,10 +11,10 @@ class Graph:
         self.graph = graph  # residual graph
         self.ROW = len(graph)
 
+    def BFS(self, s, t, parent):
 
-    def BFS(self, s, t, parent):
 
-        # Mark all the vertices as not visited
+            # Mark all the vertices as not visited
         visited = [False] * (self.ROW)
 
         # Create a queue for BFS
@@ -27,7 +27,7 @@ class Graph:
         # Standard BFS Loop
          while queue:
 
-                # Dequeue a vertex from queue and print it
+                    # Dequeue a vertex from queue and print it
             u = queue.pop(0)
 
             # Get all adjacent vertices of the dequeued vertex u
@@ -47,7 +47,7 @@ class Graph:
     # Returns tne maximum flow from s to t in the given graph
      def FordFulkerson(self, source, sink):
 
-            # This array is filled by BFS and to store path
+                # This array is filled by BFS and to store path
         parent = [-1] * (self.ROW)
 
         max_flow = 0  # There is no flow initially
@@ -55,12 +55,12 @@ class Graph:
         # Augment the flow while there is path from source to sink
          while self.BFS(source, sink, parent):
 
-                # Find minimum residual capacity of the edges along the
+                    # Find minimum residual capacity of the edges along the
             # path filled by BFS. Or we can say find the maximum flow
             # through the path found.
             path_flow = float("Inf")
             s = sink
-             while(s !=  source):
+             while(s !=   source):
                 path_flow = min(path_flow, self.graph[parent[s]][s])
                 s = parent[s]
 
@@ -70,7 +70,7 @@ class Graph:
             # update residual capacities of the edges and reverse edges
             # along the path
             v = sink
-             while(v !=  source):
+             while(v !=   source):
                 u = parent[v]
                 self.graph[u][v] -= path_flow
                 self.graph[v][u] += path_flow
