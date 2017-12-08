@@ -1,6 +1,5 @@
-from heapImplementation import Heap
+from Minheap import minHeap
 import time
-import threading
 
 
 class Building(object):
@@ -10,7 +9,7 @@ class Building(object):
         super().__init__()
         self.N = N
         self.NumElev = NumElev
-        self._Elevator_List = Heap(key=None)
+        self._Elevator_List = minHeap(key=None)
 
     @property
     def N(self):
