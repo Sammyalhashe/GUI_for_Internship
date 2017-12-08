@@ -27,7 +27,7 @@ public class AVLtree {
         if(N == null) {
             return -1;
         } else {
-            return N.ht;
+            return N.ht
         }
     }
 
