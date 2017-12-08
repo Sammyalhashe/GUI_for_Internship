@@ -19,7 +19,7 @@ def Code_Printer(N, buff):
 
 
 if __name__ == '__main__':
-    N = 12
+    N = 5
     buff = "D"
     print("wire [48:0] " + ", ".join(["Psri_pb%d, Psri_b%d, Psri_nb%d" %
                                       (i, i, i) for i in range(1, N)]) + ";")
