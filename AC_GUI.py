@@ -80,6 +80,10 @@ class AC_GUI(Frame):
 
     # RUNNING OLIVIER's TIMING SCRIPTS (NEEDS WORK)
     def run_timingScript(self):
+        """[summary]
+
+        [description]
+        """
         pass
         #root = Tk(screenName=None, baseName=None, className='Tk', useTk=1, sync=0, use=None)
         script_filename = tkFileDialog.askopenfilename(
@@ -122,6 +126,10 @@ class AC_GUI(Frame):
 
     # CONCATENATE TMG SCRIPT RESULTS INTO ONE FILE AND CHOOSE DUMP DIRECTORY
     def concatenate(self):
+        """[summary]
+
+        [description]
+        """
 
         dirname = tkFileDialog.askdirectory(**dirdic)
         self.top.insert(INSERT, "Chose Directory: %s\n" %
@@ -149,6 +157,10 @@ class AC_GUI(Frame):
 
     # IMPORT SIL DATA AND CHOOSE DUMP DIR AND FOLDER NAME
     def importISE(self):
+        """[summary]
+
+        [description]
+        """
         dump_dir = tkFileDialog.askdirectory(**import_dic)
         dump_dir1 = dump_dir.replace('/', '\\')
         dump_dir1 = dump_dir1.encode('ascii')
@@ -183,6 +195,10 @@ class AC_GUI(Frame):
     # RUNS THE SILICON DATA PARSER FROM ISE AND PUTS IT INTO A FOLDER CALLED
     # 'CRUNCHED'
     def runparser(self):
+        """[summary]
+
+        [description]
+        """
         Data_dir = tkFileDialog.askdirectory(**Sil_data_dic)
         Data_dir1 = Data_dir.replace('/', '\\')
         Data_dir1 = Data_dir1.encode('ascii')
@@ -212,7 +228,10 @@ class AC_GUI(Frame):
     # YOU GIVE THE SILICON(CRUNCHED)+TIMING DATA AND RUNS A PERL SCRIPT THAT
     # GENERATES RATIOS TO PLOT
     def run_all(self):
-        pass
+        """[summary]
+
+        [description]
+        """
         proc = Popen('C:\cygwin64\Cygwin.bat',
                      stdin=PIPE, stdout=PIPE, bufsize=1)
 
@@ -246,6 +265,10 @@ class AC_GUI(Frame):
     # CREATING THE GUI AND ATTACHING THE BUTTTONS TO ALL FUNCTIONS DEFINED ABOVE
     # CAN BE MADE TO LOOK A LITTLE PRETTIER
     def createWidgets(self):
+        """[summary]
+
+        [description]
+        """
 
         # LABEL
         label1 = Label(self, text="AC Data Process Flow:")
@@ -309,6 +332,13 @@ class AC_GUI(Frame):
         self.top.grid(column=4, row=1)
 
     def __init__(self, master=None):
+        """[summary]
+
+        [description]
+
+        Keyword Arguments:
+            master {[type]} -- [description] (default: {None})
+        """
         Frame.__init__(self, master)
         self.pack()
         self.createWidgets()
@@ -318,6 +348,16 @@ class AC_GUI(Frame):
 class ShellHandler:
 
     def __init__(self, top, host, user, psw):
+        """[summary]
+
+        [description]
+
+        Arguments:
+            top {[type]} -- [description]
+            host {[type]} -- [description]
+            user {[type]} -- [description]
+            psw {[type]} -- [description]
+        """
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.host = host
@@ -326,6 +366,13 @@ class ShellHandler:
         self.top = top
 
     def connect(self):
+        """[summary]
+
+        [description]
+
+        Returns:
+            [type] -- [description]
+        """
         try:
 
             self.ssh.load_system_host_keys(filename=None)
@@ -355,6 +402,10 @@ class ShellHandler:
         return self.ssh, 0
 
     def __del__(self):
+        """[summary]
+
+        [description]
+        """
         self.ssh.close()
 
     def execute(self, cmd):
