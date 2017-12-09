@@ -25,7 +25,7 @@ class Graph:
         visited[s] = True
 
         # Standard BFS Loop
-         while queue:
+            while queue:
 
                     # Dequeue a vertex from queue and print it
             u = queue.pop(0)
@@ -33,19 +33,19 @@ class Graph:
             # Get all adjacent vertices of the dequeued vertex u
             # If a adjacent has not been visited, then mark it
             # visited and enqueue it
-             for ind, val in enumerate(self.graph[u]):
-                 if visited[ind] is False and val > 0:
+                for ind, val in enumerate(self.graph[u]):
+                    if visited[ind] is False and val > 0:
                     queue.append(ind)
                     visited[ind] = True
                     parent[ind] = u
 
         # If we reached sink in BFS starting from source, then return
         # true, else false
-         return True if visited[t] else False
+            return True if visited[t] else False
 
 
     # Returns tne maximum flow from s to t in the given graph
-     def FordFulkerson(self, source, sink):
+        def FordFulkerson(self, source, sink):
 
                 # This array is filled by BFS and to store path
         parent = [-1] * (self.ROW)
@@ -53,14 +53,14 @@ class Graph:
         max_flow = 0  # There is no flow initially
 
         # Augment the flow while there is path from source to sink
-         while self.BFS(source, sink, parent):
+            while self.BFS(source, sink, parent):
 
                     # Find minimum residual capacity of the edges along the
             # path filled by BFS. Or we can say find the maximum flow
             # through the path found.
             path_flow = float("Inf")
             s = sink
-             while(s !=   source):
+                while(s !=   source):
                 path_flow = min(path_flow, self.graph[parent[s]][s])
                 s = parent[s]
 
@@ -70,13 +70,13 @@ class Graph:
             # update residual capacities of the edges and reverse edges
             # along the path
             v = sink
-             while(v !=   source):
+                while(v !=   source):
                 u = parent[v]
                 self.graph[u][v] -= path_flow
                 self.graph[v][u] += path_flow
                 v = parent[v]
 
-         return max_flow
+            return max_flow
 
 
 # Create a graph given in the above diagram

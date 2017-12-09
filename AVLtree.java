@@ -24,7 +24,7 @@ public class AVLtree {
     }
 
     static int height (Node N) {
-        if(N == null) {
+        if (N == null) {
             return -1;
         } else {
             return N.ht
@@ -32,11 +32,11 @@ public class AVLtree {
     }
 
     static int max(int a, int b) {
-        return (a>b)?a:b;
+        return (a > b) ? a : b;
     }
 
     static int BalanceFactor(Node node) {
-        if(node == null) {
+        if (node == null) {
             return 0;
         } else {
             return (height(node.left) - height(node.right));
@@ -70,8 +70,8 @@ public class AVLtree {
         y.right =  T2;
 
         // Update heights: always one more than children height
-        y.ht = max(height(y.left),height(y.right)) + 1;
-        x.ht = max(height(x.left),height(x.right)) + 1;
+        y.ht = max(height(y.left), height(y.right)) + 1;
+        x.ht = max(height(x.left), height(x.right)) + 1;
 
         return x; // new root
     }
@@ -91,7 +91,7 @@ public class AVLtree {
 
         /* 2. Update height of this ancestor node */
         node.ht = 1 + max(height(node.left),
-                              height(node.right));
+                          height(node.right));
 
         /* 3. Get the balance factor of this ancestor
               node to check whether this node became
