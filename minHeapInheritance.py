@@ -1,4 +1,7 @@
-class minHeap(object):
+from Heap import Heap
+
+
+class minHeap(Heap):
     """Min Heap:
 
     Binary Tree with following properties:
@@ -18,10 +21,7 @@ class minHeap(object):
         Keyword Arguments:
             key {function reference} -- functions accesses the value for which the heap is built. If it's None, then it looks at the array value itself. If the array holds objects with values inside, teh function should access those values within the object (default: {None})
         """
-        super().__init__()  # for multi-inheritance
-        self.heap = [0]
-        self.current_size = 0
-        self.key = key
+        super().__init__(key)  # for multi-inheritance
 
     @property
     def key(self):
@@ -46,18 +46,18 @@ class minHeap(object):
         self.current_size += 1
         self.restoreHeap(self.current_size)
 
-    def swap(self, i1, i2):
-        """[swaps the elements of the heap]
+    # def swap(self, i1, i2):
+    #     [swaps the elements of the heap]
 
-        [at indices i1 and i2]
+    #     [at indices i1 and i2]
 
-        Arguments:
-            i1 {int} -- [index of first element]
-            i2 {int} -- [index of second element]
-        """
-        temp = self.heap[i1]
-        self.heap[i1] = self.heap[i2]
-        self.heap[i2] = temp
+    #     Arguments:
+    #         i1 {int} -- [index of first element]
+    #         i2 {int} -- [index of second element]
+
+    #     temp = self.heap[i1]
+    #     self.heap[i1] = self.heap[i2]
+    #     self.heap[i2] = temp
 
     def restoreHeap(self, size):
         """
@@ -102,34 +102,6 @@ class minHeap(object):
         self.heap.pop()
         self.bubbleDown(1)
         return return_val
-
-    # def deleteVal(self, key, index=1):
-    #     """[delete an object from the heap corresponding to value key]
-
-    #     [As in summary above]
-
-    #     Arguments:
-    #         index {int} -- [starting index, default of the start of the heap]
-    #         key {int} -- [value of the object ot be deleted]
-
-    #     Returns:
-    #         [int] -- [value being deleted, else if not in heap -1]
-    #     """
-    #     i = 1
-    #     while i < self.current_size:
-    #         if key > self.key(self.heap[i]):
-    #             i = 2 * i + 1
-    #         elif key < self.key(self.heap[i]):
-    #             i = 2 * i
-    #         else:
-    #             self.swap(i, self.current_size)
-    #             self.current_size -= 1
-    #             ret = self.key(self.heap.pop())
-    #             self.bubbleUp(i)
-    #             self.bubbleDown(1)
-    #             return ret
-    #     print("value not here")
-    #     return -1
 
     def bubbleDown(self, i):
         """[restores min heap property by 'bubbling down' larger elements]
@@ -251,3 +223,4 @@ if __name__ == '__main__':
     print(Heap.heap)
     sorted_arr = Heap.HeapSort()
     print(sorted_arr)
+    print(Heap.key)

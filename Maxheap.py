@@ -1,5 +1,5 @@
 class maxHeap(object):
-    """Min Heap:
+    """Max Heap:
 
     Binary Tree with following properties:
     1) Parent is always greater in value than children
@@ -89,7 +89,7 @@ class maxHeap(object):
                 break
 
     def deleteMax(self):
-        """[deletes minimum element from the heap -> the root]
+        """[deletes maximum element from the heap -> the root]
 
         [replaces it with the last element, then restores heap property]
 

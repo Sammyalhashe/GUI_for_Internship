@@ -3,14 +3,6 @@
 # Generic tree node class
 
 
-class ClassName(object):
-    """docstring for ClassName"""
-
-    def __init__(self, arg):
-        super(ClassName, self).__init__()
-        self.arg = arg
-
-
 class TreeNode(object):
     def __init__(self, val):
         self.val = val
@@ -23,6 +15,10 @@ class TreeNode(object):
 
 
 class AVL_Tree(object):
+    """AVL Tree Implmentation in python
+
+    [self-balancing and restoring binary tree]
+    """
 
     def __init__(self, first_val):
         self.root = self.insert(None, first_val)
