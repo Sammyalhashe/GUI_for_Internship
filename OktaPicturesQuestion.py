@@ -14,7 +14,7 @@ def get_significant(num):
 
 
 def solution(S):
-    # write your code in Python 2.7
+  # write your code in Python 2.7
   pass
   input_list = list(S.split('\n'))
 

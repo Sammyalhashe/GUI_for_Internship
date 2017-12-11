@@ -2,9 +2,9 @@ from maxHeapInheritance import maxHeap
 
 
 class PQ(maxHeap):
-    """[summary]
+    """Put stuff in and take stuff out with Highest priority
 
-    [description]
+    [Inherits from maxHeap class to remove with highest priority]
 
     Extends:
         maxHeap
@@ -16,4 +16,11 @@ class PQ(maxHeap):
 
 if __name__ == '__main__':
     pq = PQ()
+    print(pq.heap)
+    pq.insert(4)
+    pq.insert(2)
+    pq.insert(6)
+    pq.insert(89)
+    print(pq.heap)
+    pq.deleteMax()
     print(pq.heap)
