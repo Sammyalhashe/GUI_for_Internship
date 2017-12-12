@@ -17,6 +17,11 @@ public class Solution {
         while (pos < n) {
             // be greedy
             // don't want to go back to something already visited
+            // This solution doesn't work for one reason:
+            // YOU ARE ONLY CHECKING ONE ROUTE
+            // Say you leap forward by leap spaces, then you cannot go any farther in the array
+            // you are done, but there may have been a solution if you first leap by 1 and then leaped by leap
+            // very inflexible
             game[pos] = 1;
             if (pos == n - 1 || (pos + 1) >= n || (pos + leap) >= n) {
                 return true;
