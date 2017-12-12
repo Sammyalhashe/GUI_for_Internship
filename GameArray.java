@@ -9,22 +9,6 @@ public class Solution {
     arr[i] = 1;
     return isSolvable(m, arr, i + 1) || isSolvable(m, arr, i - 1) || isSolvable(m, arr, i + m);
 }
-    public static boolean check(int[] game, int leap, int i, int j, int n,boolean wentBack) {
-        if(j >= n-1 || i+1 > n-1 || i+leap > n-1){
-            return true;
-        }
-        if(game[i+leap] != 1){
-            return check(game,leap,i+leap,j+leap,n, false);
-        }
-        else if(game[i+1] != 1) {
-            return check(game,leap,i+1,j+1,n,true);
-        }
-        else if((i-1) >= 0 && game[i-1] != 1 && wentBack == false) {
-            return check(game,leap,i-1,j-1,n,true);
-        } else {
-            return false;
-        }
-    }
 
     public static boolean canWin(int leap, int[] game) {
         // Return true if you can win the game; otherwise, return false.
@@ -50,7 +34,6 @@ public class Solution {
             }
         }
         return true;
-        //return check(game,leap,0,leap,n, false);
     }
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
