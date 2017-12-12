@@ -29,10 +29,25 @@ class Heap(object):
 
     @abstractproperty
     def key(self):
+        """key getter
+
+        Decorators:
+            abstractproperty
+        """
         return "should never see this"
 
     @key.setter
     def key(self, key):
+        """Setter for key function
+
+        Implemented in subclasses
+
+        Decorators:
+            key.setter
+
+        Arguments:
+            key {function} -- function that gives the basis for building heap
+        """
         return
 
     @abstractmethod
