@@ -15,6 +15,10 @@ class TreeNode(object):
 
 
 class AVL_Tree(object):
+    """AVL Tree Implmentation in python
+
+    [self-balancing and restoring binary tree]
+    """
 
     def __init__(self, first_val):
         self.root = self.insert(None, first_val)
