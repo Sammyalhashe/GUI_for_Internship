@@ -1,4 +1,4 @@
-class minHeap(object):
+class Heap(object):
     """Min Heap:
 
     Binary Tree with following properties:
@@ -8,31 +8,14 @@ class minHeap(object):
     Also stores a current_size that is initialized at 0
     """
 
-    def __init__(self, key=None):
-        """constructor for heap
+    def __init__(self):
+        """[summary]
 
-        Initializes the heap with [0] and the current_size at 0
-        Also initializes the key() function for accessing the value for
-        which the heap is built
-
-        Keyword Arguments:
-            key {function reference} -- functions accesses the value for which the heap is built. If it's None, then it looks at the array value itself. If the array holds objects with values inside, teh function should access those values within the object (default: {None})
+        [description]
         """
-        super().__init__()  # for multi-inheritance
+        super(Heap, self).__init__()  # for multi-inheritance
         self.heap = [0]
         self.current_size = 0
-        self.key = key
-
-    @property
-    def key(self):
-        return self._key
-
-    @key.setter
-    def key(self, key):
-        if key is None:
-            self._key = lambda x: x  # identity function
-        else:
-            self._key = key
 
     def insert(self, value):
         """[inserts a value into the heap]
@@ -40,7 +23,7 @@ class minHeap(object):
         [appends at the end and then restores the heap property by comaring parent and child]
 
         Arguments:
-            value {int/object} -- [value/object to be inserted in heap array]
+            value {int} -- [value to be inserted in heap]
         """
         self.heap.append(value)
         self.current_size += 1
@@ -64,7 +47,7 @@ class minHeap(object):
         restores min heap property (use only for insert)
         """
         while (size // 2 > 0):
-            if(self.key(self.heap[size // 2]) > self.key(self.heap[size])):
+            if(self.heap[size // 2] > self.heap[size]):
                 self.swap(size, size // 2)
                 size = size // 2
             else:
@@ -74,7 +57,7 @@ class minHeap(object):
         """[Used for deleting arbitrary value]
 
         [
-        When deleting, we swap last value (one of the biggest in min heap) with the value being deleted.
+        When deleting, we swap last value (biggest in min heap) with the value being deleted.
         Use this to bring the largest to the top. The next function would then restore its rightful place in the heap
         ]
 
@@ -82,7 +65,7 @@ class minHeap(object):
             index {int} -- [index where you want the value bubbled up]
         """
         while index // 2 > 0:
-            if(self.key(self.heap[index // 2]) < self.key(self.heap[index])):
+            if(self.heap[index // 2] < self.heap[index]):
                 self.swap(index, index // 2)
                 index = index // 2
             else:
@@ -96,40 +79,40 @@ class minHeap(object):
         Returns:
             [int] -- [value deleted from heap]
         """
-        return_val = self.key(self.heap[1])
+        return_val = self.heap[1]
         self.heap[1] = self.heap[self.current_size]
         self.current_size -= 1
         self.heap.pop()
         self.bubbleDown(1)
         return return_val
 
-    # def deleteVal(self, key, index=1):
-    #     """[delete an object from the heap corresponding to value key]
+    def deleteVal(self, index, key):
+        """[summary]
 
-    #     [As in summary above]
+        [description]
 
-    #     Arguments:
-    #         index {int} -- [starting index, default of the start of the heap]
-    #         key {int} -- [value of the object ot be deleted]
+        Arguments:
+            index {[type]} -- [description]
+            key {[type]} -- [description]
 
-    #     Returns:
-    #         [int] -- [value being deleted, else if not in heap -1]
-    #     """
-    #     i = 1
-    #     while i < self.current_size:
-    #         if key > self.key(self.heap[i]):
-    #             i = 2 * i + 1
-    #         elif key < self.key(self.heap[i]):
-    #             i = 2 * i
-    #         else:
-    #             self.swap(i, self.current_size)
-    #             self.current_size -= 1
-    #             ret = self.key(self.heap.pop())
-    #             self.bubbleUp(i)
-    #             self.bubbleDown(1)
-    #             return ret
-    #     print("value not here")
-    #     return -1
+        Returns:
+            [int] -- [value being deleted, else if not in heap -1]
+        """
+        i = 1
+        while i < self.current_size:
+            if key > self.heap[i]:
+                i = 2 * i + 1
+            elif key < self.heap[i]:
+                i = 2 * i
+            else:
+                self.swap(i, self.current_size)
+                self.current_size -= 1
+                ret = self.heap.pop()
+                self.bubbleUp(i)
+                self.bubbleDown(1)
+                return ret
+        print("value not here")
+        return -1
 
     def bubbleDown(self, i):
         """[restores min heap property by 'bubbling down' larger elements]
@@ -144,7 +127,7 @@ class minHeap(object):
         """
         while (i * 2 <= self.current_size):
             mc = self.getSmallestChild(i)
-            if(self.key(self.heap[mc]) < self.key(self.heap[i])):
+            if(self.heap[mc] < self.heap[i]):
                 self.swap(i, mc)
                 i = mc
             else:
@@ -170,12 +153,12 @@ class minHeap(object):
         if(2 * i + 1 > self.current_size):
             return 2 * i
         else:
-            smallest = 2 * i
-            if(self.key(self.heap[2 * i + 1]) < self.key(self.heap[smallest])):
-                smallest = 2 * i + 1
+            smallest = self.heap[2 * i]
+            if(self.heap[2 * i + 1] < smallest):
+                smallest = self.heap[2 * i + 1]
             return smallest
 
-    def buildHeap(self, array, key=None):
+    def buildHeap(self, array):
         """
         @brief      Builds a heap.
 
@@ -184,7 +167,6 @@ class minHeap(object):
 
         @return     The heap.
         """
-        self.key = key
         index = len(array) // 2
         self.current_size = len(array)
         self.heap = [0] + array
@@ -205,9 +187,9 @@ class minHeap(object):
         LC = 2 * index
         RC = 2 * index + 1
         smallest = index
-        if(LC <= current_size and self.key(self.heap[LC]) < self.key(self.heap[index])):
+        if(LC <= current_size and self.heap[LC] < self.heap[index]):
             smallest = LC
-        if(RC <= current_size and self.key(self.heap[RC]) < self.key(self.heap[smallest])):
+        if(RC <= current_size and self.heap[RC] < self.heap[smallest]):
             smallest = RC
         if smallest != index:
             self.swap(index, smallest)
@@ -234,10 +216,6 @@ class minHeap(object):
         # restore the object heap
         self.buildHeap(sorted_arr)
         return (sorted_arr if reverse else sorted_arr[::-1])
-
-    def reconstructHeap(self, key):
-        self.key = key
-        self.buildHeap(self.heap[1:])  # ingoring the 0 at front
 
 
 if __name__ == '__main__':
