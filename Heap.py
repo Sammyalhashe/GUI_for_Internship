@@ -1,5 +1,9 @@
+from abc import ABCMeta, abstractmethod, abstractproperty
+
+
 class Heap(object):
-    """Min Heap:
+    __metaclass__ = ABCMeta
+    """Heap:
 
     Binary Tree with following properties:
     1) Parent is always less in value than children
@@ -8,27 +12,56 @@ class Heap(object):
     Also stores a current_size that is initialized at 0
     """
 
-    def __init__(self):
-        """[summary]
+    def __init__(self, key=None):
+        """constructor for heap
 
-        [description]
+        Initializes the heap with [0] and the current_size at 0
+        Also initializes the key() function for accessing the value for
+        which the heap is built
+
+        Keyword Arguments:
+            key {function reference} -- functions accesses the value for which the heap is built. If it's None, then it looks at the array value itself. If the array holds objects with values inside, teh function should access those values within the object (default: {None})
         """
-        super(Heap, self).__init__()  # for multi-inheritance
+        super().__init__()  # for multi-inheritance
         self.heap = [0]
         self.current_size = 0
+        self.key = key
 
+    @abstractproperty
+    def key(self):
+        """key getter
+
+        Decorators:
+            abstractproperty
+        """
+        return "should never see this"
+
+    @key.setter
+    def key(self, key):
+        """Setter for key function
+
+        Implemented in subclasses
+
+        Decorators:
+            key.setter
+
+        Arguments:
+            key {function} -- function that gives the basis for building heap
+        """
+        return
+
+    @abstractmethod
     def insert(self, value):
         """[inserts a value into the heap]
 
         [appends at the end and then restores the heap property by comaring parent and child]
 
         Arguments:
-            value {int} -- [value to be inserted in heap]
+            value {int/object} -- [value/object to be inserted in heap array]
         """
-        self.heap.append(value)
-        self.current_size += 1
-        self.restoreHeap(self.current_size)
+        pass
 
+    @abstractmethod
     def swap(self, i1, i2):
         """[swaps the elements of the heap]
 
@@ -42,35 +75,28 @@ class Heap(object):
         self.heap[i1] = self.heap[i2]
         self.heap[i2] = temp
 
+    @abstractmethod
     def restoreHeap(self, size):
         """
         restores min heap property (use only for insert)
         """
-        while (size // 2 > 0):
-            if(self.heap[size // 2] > self.heap[size]):
-                self.swap(size, size // 2)
-                size = size // 2
-            else:
-                break
+        pass
 
+    @abstractmethod
     def bubbleUp(self, index):
         """[Used for deleting arbitrary value]
 
         [
-        When deleting, we swap last value (biggest in min heap) with the value being deleted.
-        Use this to bring the largest to the top. The next function would then restore its rightful place in the heap
+        When deleting, we swap last valuewith the value being deleted.
+        Use this to bring the largest(smallest) to the top. The next function would then restore its rightful place in the heap
         ]
 
         Arguments:
             index {int} -- [index where you want the value bubbled up]
         """
-        while index // 2 > 0:
-            if(self.heap[index // 2] < self.heap[index]):
-                self.swap(index, index // 2)
-                index = index // 2
-            else:
-                break
+        pass
 
+    @abstractmethod
     def deleteMin(self):
         """[deletes minimum element from the heap -> the root]
 
@@ -79,41 +105,20 @@ class Heap(object):
         Returns:
             [int] -- [value deleted from heap]
         """
-        return_val = self.heap[1]
-        self.heap[1] = self.heap[self.current_size]
-        self.current_size -= 1
-        self.heap.pop()
-        self.bubbleDown(1)
-        return return_val
+        pass
 
-    def deleteVal(self, index, key):
-        """[summary]
+    @abstractmethod
+    def deleteMax(self):
+        """[deletes minimum element from the heap -> the root]
 
-        [description]
-
-        Arguments:
-            index {[type]} -- [description]
-            key {[type]} -- [description]
+        [replaces it with the last element, then restores heap property]
 
         Returns:
-            [int] -- [value being deleted, else if not in heap -1]
+            [int] -- [value deleted from heap]
         """
-        i = 1
-        while i < self.current_size:
-            if key > self.heap[i]:
-                i = 2 * i + 1
-            elif key < self.heap[i]:
-                i = 2 * i
-            else:
-                self.swap(i, self.current_size)
-                self.current_size -= 1
-                ret = self.heap.pop()
-                self.bubbleUp(i)
-                self.bubbleDown(1)
-                return ret
-        print("value not here")
-        return -1
+        pass
 
+    @abstractmethod
     def bubbleDown(self, i):
         """[restores min heap property by 'bubbling down' larger elements]
 
@@ -125,14 +130,9 @@ class Heap(object):
         Arguments:
             i {int} -- [index to start bubbling down]
         """
-        while (i * 2 <= self.current_size):
-            mc = self.getSmallestChild(i)
-            if(self.heap[mc] < self.heap[i]):
-                self.swap(i, mc)
-                i = mc
-            else:
-                break
+        pass
 
+    @abstractmethod
     def getSmallestChild(self, i):
         """[gets the smallest child of the parent node]
 
@@ -148,17 +148,28 @@ class Heap(object):
         Returns:
             number -- [index of smallest of the three -> could be parent]
         """
-        # don't have to worry about 2*i being larger as this function wouldn't
-        # be called
-        if(2 * i + 1 > self.current_size):
-            return 2 * i
-        else:
-            smallest = self.heap[2 * i]
-            if(self.heap[2 * i + 1] < smallest):
-                smallest = self.heap[2 * i + 1]
-            return smallest
+        pass
 
-    def buildHeap(self, array):
+    @abstractmethod
+    def getLargestChild(self, i):
+        """[gets the smallest child of the parent node]
+
+        [
+        The function where this function is actually called i makes sure that 2*i < current_size
+        so this function only considers the case until 2*i + 1 <  current_size.
+        Basically compares the parent with child nodes and finds the smallest one of the three
+        ]
+
+        Arguments:
+            i {int} -- [index of parent node]
+
+        Returns:
+            number -- [index of smallest of the three -> could be parent]
+        """
+        return
+
+    @abstractmethod
+    def buildHeap(self, array, key=None):
         """
         @brief      Builds a heap.
 
@@ -167,6 +178,7 @@ class Heap(object):
 
         @return     The heap.
         """
+        self.key = key
         index = len(array) // 2
         self.current_size = len(array)
         self.heap = [0] + array
@@ -174,6 +186,7 @@ class Heap(object):
             self.bubbleDown(index)
             index -= 1
 
+    @abstractmethod
     def satisfyMinHeapProperty(self, index, current_size):
         """
         @brief      recursive func satisfying min heap property
@@ -184,17 +197,22 @@ class Heap(object):
 
         @return     { no return val; alters self.heap }
         """
-        LC = 2 * index
-        RC = 2 * index + 1
-        smallest = index
-        if(LC <= current_size and self.heap[LC] < self.heap[index]):
-            smallest = LC
-        if(RC <= current_size and self.heap[RC] < self.heap[smallest]):
-            smallest = RC
-        if smallest != index:
-            self.swap(index, smallest)
-            self.satisfyMinHeapProperty(smallest, current_size)
+        pass
 
+    @abstractmethod
+    def satisfyMaxHeapProperty(self, index, current_size):
+        """
+        @brief      recursive func satisfying min heap property
+
+        @param      self          The object
+        @param      index         The index
+        @param      current_size  The current size
+
+        @return     { no return val; alters self.heap }
+        """
+        pass
+
+    @abstractmethod
     def HeapSort(self, reverse=True):
         """
         @brief      { function_description }
@@ -204,18 +222,19 @@ class Heap(object):
 
         @return     { sorted array }
         """
-        # array to be returned
-        sorted_arr = []
-        # defined in constructor for heap
-        current_size = self.current_size
-        while current_size != 0:
-            self.swap(1, current_size)
-            sorted_arr.append(self.heap[current_size])
-            current_size -= 1
-            self.satisfyMinHeapProperty(1, current_size)
-        # restore the object heap
-        self.buildHeap(sorted_arr)
-        return (sorted_arr if reverse else sorted_arr[::-1])
+        return
+
+    @abstractmethod
+    def reconstructHeap(self, key):
+        """Reconstructs the heap by changing the key for which the heap is built
+
+        Decorators:
+            abstractmethod
+
+        Arguments:
+            key {function} -- [function that returns a value that is the basis for how the heap is built]
+        """
+        pass
 
 
 if __name__ == '__main__':

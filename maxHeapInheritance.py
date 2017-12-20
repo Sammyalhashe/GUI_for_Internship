@@ -1,21 +1,53 @@
-class Heap(object):
-    """Min Heap:
+from Heap import Heap
+
+
+class maxHeap(Heap):
+    """Max Heap:
 
     Binary Tree with following properties:
-    1) Parent is always less in value than children
+    1) Parent is always greater in value than children
     2) has height of log(N) (base 2)
     Has a heap that, by convention, has a initialization of [0]
     Also stores a current_size that is initialized at 0
     """
 
-    def __init__(self):
-        """[summary]
+    def __init__(self, key=None):
+        """constructor for heap
 
-        [description]
+        Initializes the heap with [0] and the current_size at 0
+        Also initializes the key() function for accessing the value for
+        which the heap is built
+
+        Keyword Arguments:
+            key {function reference} -- functions accesses the value for which the heap is built. If it's None, then it looks at the array value itself. If the array holds objects with values inside, teh function should access those values within the object (default: {None})
         """
-        super(Heap, self).__init__()  # for multi-inheritance
-        self.heap = [0]
-        self.current_size = 0
+        super().__init__(key)  # for multi-inheritance
+
+    @property
+    def key(self):
+        """key getter
+
+        Returns:
+            function -- [function that gives the basis for heap building]
+        """
+        return self._key
+
+    @key.setter
+    def key(self, key):
+        """key settter
+
+        [if the key is None, we make it the identity function, else we give it the passed function]
+
+        Decorators:
+            key.setter
+
+        Arguments:
+            key {[function]} -- [function that gives the basis for heap building]
+        """
+        if key is None:
+            self._key = lambda x: x  # identity function
+        else:
+            self._key = key
 
     def insert(self, value):
         """[inserts a value into the heap]
@@ -23,31 +55,31 @@ class Heap(object):
         [appends at the end and then restores the heap property by comaring parent and child]
 
         Arguments:
-            value {int} -- [value to be inserted in heap]
+            value {int/object} -- [value/object to be inserted in heap array]
         """
         self.heap.append(value)
         self.current_size += 1
         self.restoreHeap(self.current_size)
 
-    def swap(self, i1, i2):
-        """[swaps the elements of the heap]
+    # def swap(self, i1, i2):
+    #     [swaps the elements of the heap]
 
-        [at indices i1 and i2]
+    #     [at indices i1 and i2]
 
-        Arguments:
-            i1 {int} -- [index of first element]
-            i2 {int} -- [index of second element]
-        """
-        temp = self.heap[i1]
-        self.heap[i1] = self.heap[i2]
-        self.heap[i2] = temp
+    #     Arguments:
+    #         i1 {int} -- [index of first element]
+    #         i2 {int} -- [index of second element]
+
+    #     temp = self.heap[i1]
+    #     self.heap[i1] = self.heap[i2]
+    #     self.heap[i2] = temp
 
     def restoreHeap(self, size):
         """
         restores min heap property (use only for insert)
         """
         while (size // 2 > 0):
-            if(self.heap[size // 2] > self.heap[size]):
+            if(self.key(self.heap[size // 2]) < self.key(self.heap[size])):
                 self.swap(size, size // 2)
                 size = size // 2
             else:
@@ -57,7 +89,7 @@ class Heap(object):
         """[Used for deleting arbitrary value]
 
         [
-        When deleting, we swap last value (biggest in min heap) with the value being deleted.
+        When deleting, we swap last value (one of smallest in min heap) with the value being deleted.
         Use this to bring the largest to the top. The next function would then restore its rightful place in the heap
         ]
 
@@ -65,13 +97,13 @@ class Heap(object):
             index {int} -- [index where you want the value bubbled up]
         """
         while index // 2 > 0:
-            if(self.heap[index // 2] < self.heap[index]):
+            if(self.key(self.heap[index // 2]) > self.key(self.heap[index])):
                 self.swap(index, index // 2)
                 index = index // 2
             else:
                 break
 
-    def deleteMin(self):
+    def deleteMax(self):
         """[deletes minimum element from the heap -> the root]
 
         [replaces it with the last element, then restores heap property]
@@ -79,43 +111,15 @@ class Heap(object):
         Returns:
             [int] -- [value deleted from heap]
         """
-        return_val = self.heap[1]
+        return_val = self.key(self.heap[1])
         self.heap[1] = self.heap[self.current_size]
         self.current_size -= 1
         self.heap.pop()
         self.bubbleDown(1)
         return return_val
 
-    def deleteVal(self, index, key):
-        """[summary]
-
-        [description]
-
-        Arguments:
-            index {[type]} -- [description]
-            key {[type]} -- [description]
-
-        Returns:
-            [int] -- [value being deleted, else if not in heap -1]
-        """
-        i = 1
-        while i < self.current_size:
-            if key > self.heap[i]:
-                i = 2 * i + 1
-            elif key < self.heap[i]:
-                i = 2 * i
-            else:
-                self.swap(i, self.current_size)
-                self.current_size -= 1
-                ret = self.heap.pop()
-                self.bubbleUp(i)
-                self.bubbleDown(1)
-                return ret
-        print("value not here")
-        return -1
-
     def bubbleDown(self, i):
-        """[restores min heap property by 'bubbling down' larger elements]
+        """[restores max heap property by 'bubbling down' larger elements]
 
         [
         Compares the smallest child to the current parent until the parent is the smallest
@@ -126,14 +130,14 @@ class Heap(object):
             i {int} -- [index to start bubbling down]
         """
         while (i * 2 <= self.current_size):
-            mc = self.getSmallestChild(i)
-            if(self.heap[mc] < self.heap[i]):
-                self.swap(i, mc)
-                i = mc
+            lc = self.getLargestChild(i)
+            if(self.key(self.heap[lc]) > self.key(self.heap[i])):
+                self.swap(i, lc)
+                i = lc
             else:
                 break
 
-    def getSmallestChild(self, i):
+    def getLargestChild(self, i):
         """[gets the smallest child of the parent node]
 
         [
@@ -153,12 +157,12 @@ class Heap(object):
         if(2 * i + 1 > self.current_size):
             return 2 * i
         else:
-            smallest = self.heap[2 * i]
-            if(self.heap[2 * i + 1] < smallest):
-                smallest = self.heap[2 * i + 1]
-            return smallest
+            largest = 2 * i
+            if(self.key(self.heap[2 * i + 1]) > self.key(self.heap[largest])):
+                largest = 2 * i + 1
+            return largest
 
-    def buildHeap(self, array):
+    def buildHeap(self, array, key=None):
         """
         @brief      Builds a heap.
 
@@ -167,6 +171,7 @@ class Heap(object):
 
         @return     The heap.
         """
+        self.key = key
         index = len(array) // 2
         self.current_size = len(array)
         self.heap = [0] + array
@@ -174,7 +179,7 @@ class Heap(object):
             self.bubbleDown(index)
             index -= 1
 
-    def satisfyMinHeapProperty(self, index, current_size):
+    def satisfyMaxHeapProperty(self, index, current_size):
         """
         @brief      recursive func satisfying min heap property
 
@@ -186,14 +191,14 @@ class Heap(object):
         """
         LC = 2 * index
         RC = 2 * index + 1
-        smallest = index
-        if(LC <= current_size and self.heap[LC] < self.heap[index]):
-            smallest = LC
-        if(RC <= current_size and self.heap[RC] < self.heap[smallest]):
-            smallest = RC
-        if smallest != index:
-            self.swap(index, smallest)
-            self.satisfyMinHeapProperty(smallest, current_size)
+        largest = index
+        if(LC <= current_size and self.key(self.heap[LC]) > self.key(self.heap[index])):
+            largest = LC
+        if(RC <= current_size and self.key(self.heap[RC]) > self.key(self.heap[largest])):
+            largest = RC
+        if largest != index:
+            self.swap(index, largest)
+            self.satisfyMaxHeapProperty(largest, current_size)
 
     def HeapSort(self, reverse=True):
         """
@@ -212,10 +217,14 @@ class Heap(object):
             self.swap(1, current_size)
             sorted_arr.append(self.heap[current_size])
             current_size -= 1
-            self.satisfyMinHeapProperty(1, current_size)
+            self.satisfyMaxHeapProperty(1, current_size)
         # restore the object heap
         self.buildHeap(sorted_arr)
         return (sorted_arr if reverse else sorted_arr[::-1])
+
+    def reconstructHeap(self, key):
+        self.key = key
+        self.buildHeap(self.heap[1:])  # ingoring the 0 at front
 
 
 if __name__ == '__main__':
@@ -224,8 +233,9 @@ if __name__ == '__main__':
     """
     test = [1, 5, 3, 4, 6, 7, 5, 3]
     print(test)
-    Heap = Heap()
+    Heap = maxHeap()
     Heap.buildHeap(test)
     print(Heap.heap)
     sorted_arr = Heap.HeapSort()
     print(sorted_arr)
+    print(Heap.key)
