@@ -246,7 +246,7 @@ if __name__ == '__main__':
     """
     test = [1, 5, 3, 4, 6, 7, 5, 3]
     print(test)
-    Heap = Heap()
+    Heap = minHeap()
     Heap.buildHeap(test)
     print(Heap.heap)
     sorted_arr = Heap.HeapSort()
