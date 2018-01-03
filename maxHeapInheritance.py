@@ -85,6 +85,38 @@ class maxHeap(Heap):
             else:
                 break
 
+                def deleteVal(self, val):
+        """deletes an arbitrary value in heap (if it's there)
+
+        Swaps the last value in heap with the value to be deleted
+        Pops the heap and reduces its size
+        If the value now in the place of the deleted value has a value less than
+        its parent, bubble the index up, else bubbleDown
+
+        Arguments:
+            val {int} -- value to be deleted
+        """
+
+        for i in range(1, self.current_size + 1):
+            if self.heap[i] == val:
+                index = i
+                break
+        try:
+            if index != self.current_size + 1:
+                self.swap(index, self.current_size)
+                self.current_size -= 1
+                self.heap.pop()
+                if self.heap[index] > self.heap[index // 2]:
+                    self.bubbleUp(index)
+                else:
+                    self.bubbleDown(index)
+            else:
+                self.current_size -= 1
+                self.heap.pop()
+
+        except NameError as e:
+            print("Value not in heap, NameError:", e)
+
     def bubbleUp(self, index):
         """[Used for deleting arbitrary value]
 
@@ -97,7 +129,7 @@ class maxHeap(Heap):
             index {int} -- [index where you want the value bubbled up]
         """
         while index // 2 > 0:
-            if(self.key(self.heap[index // 2]) > self.key(self.heap[index])):
+            if(self.key(self.heap[index // 2]) < self.key(self.heap[index])):
                 self.swap(index, index // 2)
                 index = index // 2
             else:

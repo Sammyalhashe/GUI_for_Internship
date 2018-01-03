@@ -113,13 +113,15 @@ class word_trie:
         """
         curr_node = self.root
         for char in word:
-            if(not curr_node.pointsToChar(char)):
+            if(not curr_node.pointsToChar(char) and char != word[-1]):
                 curr_node.add_child(Node(char, False))
                 curr_node = curr_node.getNextNode(char)
+                print("added char %s" % (char))
             elif(char == word[-1] and not curr_node.pointsToChar(char)):
                 curr_node.add_child(Node(char, True))
                 curr_node = curr_node.getNextNode(char)
                 curr_node.add_child(Node("**", False))
+                print("added char, end of word %s" % (char))
                 break
             elif(char == word[-1] and curr_node.pointsToChar(char)):
                 curr_node = curr_node.getNextNode(char)
@@ -162,7 +164,7 @@ class word_trie:
 
         if(len(word) == 1):
             if(not start_node.pointsToChar(word[0])):
-                start_node.add_child(Node(word[0], True))
+                start_node.add_child(Node(word[0], True if word[0] in ('a', 'i') else False))
                 start_node = start_node.getNextNode(word.pop(0))
                 start_node.add_child(Node("**"))
                 return
@@ -180,3 +182,9 @@ class word_trie:
                 character = word.pop(0)
                 self.traverse_trie_down(start_node.getNextNode(character), word)
                 return
+
+
+if __name__ == '__main__':
+    trie = word_trie()
+    trie.add_word("sammy")
+    trie.add_word("alhashemi")

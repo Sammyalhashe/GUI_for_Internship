@@ -1,4 +1,4 @@
-import System;
+import System.*;
 class Node {
     int val;
     int ht;
@@ -27,7 +27,7 @@ public class AVLtree {
         if (N == null) {
             return -1;
         } else {
-            return N.ht
+            return N.ht;
         }
     }
 
@@ -82,9 +82,9 @@ public class AVLtree {
         if (node == null)
             return (new Node(key));
 
-        if (key < node.key)
+        if (key < node.val)
             node.left = insert(node.left, key);
-        else if (key > node.key)
+        else if (key > node.val)
             node.right = insert(node.right, key);
         else // Duplicate keys not allowed
             return node;
@@ -100,23 +100,23 @@ public class AVLtree {
 
         // If this node becomes unbalanced, then there
         // are 4 cases Left Left Case
-        if (balance > 1 && key < node.left.key) {
+        if (balance > 1 && key < node.left.val) {
             return this.rightRotate(node);
         }
 
         // Right Right Case
-        if (balance < -1 && key > node.right.key) {
+        if (balance < -1 && key > node.right.val) {
             return this.leftRotate(node);
         }
 
         // Left Right Case
-        if (balance > 1 && key > node.left.key) {
+        if (balance > 1 && key > node.left.val) {
             node.left = leftRotate(node.left);
             return this.rightRotate(node);
         }
 
         // Right Left Case
-        if (balance < -1 && key < node.right.key) {
+        if (balance < -1 && key < node.right.val) {
             node.right = rightRotate(node.right);
             return this.leftRotate(node);
         }

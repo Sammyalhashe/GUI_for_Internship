@@ -21,6 +21,7 @@ class AVL_Tree(object):
     """
 
     def __init__(self, first_val):
+        super().__init__()
         self.root = self.insert(None, first_val)
 
     # Recursive function to insert key in
