@@ -52,7 +52,6 @@ keepGoing = True
 START_ROW = 1
 COL_SEARCH = 0
 COL_DATE = 1
-print(len(toInsertSearch))
 
 if os.path.isfile('randomSearchHistory.txt'):
     fh = open('randomSearchHistory.txt', 'r+')
@@ -60,7 +59,7 @@ if os.path.isfile('randomSearchHistory.txt'):
     if not len(toInsertSearch) <= 34:
         fh.write('\n' + toInsertSearch + ' ' * 8 + str(dt.today().strftime('%d, %b %Y')) + ' ' * 8)
     else:
-        fh.write('\n' + toInsertSearch + ' ' * (34 - len(toInsertSearch)) + str(dt.today().strftime('%d, %b %Y')) + ' ' * 11)
+        fh.write('\n' + toInsertSearch + ' ' * (34 - len(toInsertSearch)) + str(dt.today().strftime('%d, %b %Y')) + ' ' * 11 + fudged)
     fh.truncate()
     fh.close()
 else:
