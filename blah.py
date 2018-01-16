@@ -54,11 +54,21 @@ COL_SEARCH = 0
 COL_DATE = 1
 print(len(toInsertSearch))
 
-fh = open('randomSearchHistory.txt', 'r+')
-lines = fh.readlines()  # pointer is at end of file
-
-if not len(toInsertSearch) <= 34:
-    fh.write('\n' + toInsertSearch + ' ' * 8 + str(dt.today().strftime('%d, %b %Y')) + ' ' * 8)
+if os.path.isfile('randomSearchHistory.txt'):
+    fh = open('randomSearchHistory.txt', 'r+')
+    lines = fh.readlines()  # pointer is at end of file
+    if not len(toInsertSearch) <= 34:
+        fh.write('\n' + toInsertSearch + ' ' * 8 + str(dt.today().strftime('%d, %b %Y')) + ' ' * 8)
+    else:
+        fh.write('\n' + toInsertSearch + ' ' * (34 - len(toInsertSearch)) + str(dt.today().strftime('%d, %b %Y')) + ' ' * 11)
+    fh.truncate()
+    fh.close()
 else:
-    fh.write('\n' + toInsertSearch + ' ' * (34 - len(toInsertSearch)) + str(dt.today().strftime('%d, %b %Y')) + ' ' * 11)
-fh.truncate()
+    fh = open('randomSearchHistory.txt', 'a')
+    fh.write('Search                            Date                   Fucked?')
+    if not len(toInsertSearch) <= 34:
+        fh.write('\n' + toInsertSearch + ' ' * 8 + str(dt.today().strftime('%d, %b %Y')) + ' ' * 8)
+    else:
+        fh.write('\n' + toInsertSearch + ' ' * (34 - len(toInsertSearch)) + str(dt.today().strftime('%d, %b %Y')) + ' ' * 11)
+    fh.truncate()
+    fh.close()
