@@ -42,7 +42,7 @@ for i in range(len(randomPhrases)):
     BASE_URL += randomPhrases[i] if i == len(randomPhrases) - 1 else randomPhrases[i] + '+'
     toInsertSearch += randomPhrases[i] if i == len(randomPhrases) - 1 else randomPhrases[i] + ' '
 os.system('chrome' + ' ' + BASE_URL)
-# fudged = raw_input('Is it fucked?')
+fudged = raw_input('Is it fucked?')
 
 """Documenting working
 
@@ -69,6 +69,6 @@ else:
     if not len(toInsertSearch) <= 34:
         fh.write('\n' + toInsertSearch + ' ' * 8 + str(dt.today().strftime('%d, %b %Y')) + ' ' * 8)
     else:
-        fh.write('\n' + toInsertSearch + ' ' * (34 - len(toInsertSearch)) + str(dt.today().strftime('%d, %b %Y')) + ' ' * 11)
+        fh.write('\n' + toInsertSearch + ' ' * (34 - len(toInsertSearch)) + str(dt.today().strftime('%d, %b %Y')) + ' ' * 11 + fudged)
     fh.truncate()
     fh.close()
