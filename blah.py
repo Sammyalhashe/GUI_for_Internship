@@ -11,9 +11,6 @@ try:
     from datetime import datetime as dt
     from random import randint
     from random_words import RandomWords
-    from xlrd import open_workbook
-    from xlutils.copy import copy
-    from xlwt import easyxf
 except ImportError as e:
     raise e
     print(e)
