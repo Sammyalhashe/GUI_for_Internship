@@ -7,6 +7,10 @@ class Heap(object):
     Has a heap that, by convention, has a initialization of [0]
     Also stores a current_size that is initialized at 0
     """
+    
+
+    def helloWorld(self):
+        print("Hello World")
 
     def __init__(self):
         """[summary]

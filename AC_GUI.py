@@ -42,7 +42,6 @@ tmg_dic = \
 sil_dic = \
     {'title': 'Please select where CRUNCHED Silicon Data is (from parser)'}
 
-
 ######################################################################
 
 class AC_GUI(Frame):
@@ -105,7 +104,7 @@ class AC_GUI(Frame):
 
             (ssh, conn) = self.SSHCONNECT(username, password)
 
-            print str(conn) + '\n'
+            print (str(conn) + '\n')
             if conn == 0:  # IF ABLE TO CONNECT
                 self.top.insert(INSERT,
                                 'Correct Username %s and Password %s\n'
@@ -448,21 +447,21 @@ class ShellHandler:
             channel = self.ssh.invoke_shell()
             self.stdin = channel.makefile('wb')
             self.stdout = channel.makefile('r')
-            print 'Correct Username %s and Password %s\n' % (self.user,
-                                                             self.psw)
-        except paramiko.ssh_exception.AuthenticationException, e:
-            print 'Incorrect Username %s and Password %s ' \
-                % (self.user, self.pwd)
+            print ("Correct Username %s and Password %s\n" % (self.user,
+                                                             self.psw))
+        except paramiko.ssh_exception.AuthenticationException as e:
+            print ('Incorrect Username %s and Password %s ' \
+                % (self.user, self.pwd))
             self.top.insert(INSERT,
                             'Incorrect Username %s and Password %s '
                             % (self.user, self.pwd))
             return (self.ssh, 2)
-        except socket.error, e:
+        except socket.error as e:
             if e.errno == errno.ECONNREFUSED:
-                print 'Connection Error\n'
+                print ('Connection Error\n')
                 self.top.insert(INSERT, 'Connection Error\n')
             else:
-                print 'Something went wrong\n'
+                print('Something went wrong\n')
                 self.top.insert(INSERT, 'Something went wrong\n')
             return (self.ssh, 1)
 
@@ -489,7 +488,7 @@ class ShellHandler:
 
             if stderr:
                 for errors in stderr.readlines():
-                    print errors.encode('ascii')
+                    print (errors.encode('ascii'))
                     self.top.insert(INSERT, 'Something went wrong: %s\n'
                                     % errors.encode('ascii'))
 
@@ -502,7 +501,7 @@ class ShellHandler:
                 print('stdout:', stdout.channel.exit_status_ready(),
                       stdout.channel.recv_ready())
                 if print_counter % 100 == 0:
-                    print 'script running\n'
+                    print ('script running\n')
                     self.top.insert(INSERT, 'script running\n')
                 time.sleep(5)
 
