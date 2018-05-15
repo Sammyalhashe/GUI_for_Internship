@@ -1,6 +1,0 @@
-#
-#
-import sys
-import mechanicalsoup
-for p in sys.path:
-    print(p)
